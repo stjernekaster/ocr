@@ -2,8 +2,11 @@
 import Layout from "../layouts/Layout.astro";
 import Letter from "../components/Letter.astro";
 import Hero from "../components/Hero.astro";
-import Blur from "../components/Blur.astro";
+import SingleID from "../components/SingleID.astro";
 import IndexNote from "../components/IndexNote.astro";
+
+// Importer dine data
+import cards from "../database/cards.jsx";
 ---
 
 <Layout title="osçar's Portfolio" meta="Forsiden til min portfolio hjemmeside">
@@ -29,15 +32,22 @@ import IndexNote from "../components/IndexNote.astro";
             på opdagelse i mit arbejde.
           </p>
         </div>
-        <div class="intro_image" data-aos="fade-up" data-aos-duration="1000">
-          <img src="/assets/clip.webp" alt="" class="clip" />
-          <img src="/assets/index_polaroid.webp" alt="" class="polaroid" />
-          <img
-            src="/assets/index_portrait.webp"
-            alt=""
-            class="polaroid_inner"
-          />
-        </div>
+        <a
+          href="/about"
+          class="intro_image"
+          data-aos="fade-up"
+          data-aos-duration="1000"
+        >
+          <div class="inner_img">
+            <!-- Map gennem idCards men vis kun id=1 -->
+            {
+              cards
+                .filter((card) => card.id === 0) // Filtrer kun id=1
+                .map((card) => <SingleID {...card} />)
+            }
+            <img src="/assets/id_holder.webp" alt="" class="holder" />
+          </div>
+        </a>
       </div>
     </section>
     <section id="note_section">
@@ -349,13 +359,29 @@ import IndexNote from "../components/IndexNote.astro";
       margin-bottom: 10%;
     }
 
-    .clip {
+    .inner_img {
+      position: relative;
+      width: 100%;
+      height: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: scale 0.2s;
+    }
+
+    .inner_img:hover {
+      cursor: pointer;
+      scale: 1.05;
+      transition: scale 0.2s;
+    }
+
+    .holder {
       position: absolute;
-      width: 20%;
+      width: 102%;
       place-self: center;
-      top: -4%;
-      margin-left: 0%;
-      z-index: 10;
+      top: -81%;
+      z-index: -1;
+      filter: drop-shadow(4px 6px 6px rgba(0, 0, 0, 0.25));
     }
 
     .polaroid {
@@ -408,7 +434,8 @@ import IndexNote from "../components/IndexNote.astro";
       justify-content: center;
       align-items: center;
       margin-top: 10%;
-      align-items: center;
+      overflow: hidden; /* Forhindrer AOS overflow */
+      box-sizing: border-box; /* Sikrer korrekt sizing */
     }
 
     .note-inner {
@@ -422,16 +449,20 @@ import IndexNote from "../components/IndexNote.astro";
       gap: 5%;
       width: 100%;
       height: 100vh;
+      overflow: hidden;
     }
 
-    a {
+    .presentation-inner a {
       color: inherit;
-      opacity: 0.5;
-      text-decoration: none;
+      position: relative;
     }
 
-    a:hover {
+    .note-inner a {
+      color: blue;
       text-decoration: underline;
+    }
+
+    .note-inner a:hover {
       transition: opacity 0.3s;
     }
 
@@ -439,7 +470,7 @@ import IndexNote from "../components/IndexNote.astro";
       #presentation {
         height: auto;
         min-height: 20vh;
-        margin-bottom: 40%;
+        margin-bottom: 25%;
       }
 
       .presentation-inner {
@@ -466,6 +497,17 @@ import IndexNote from "../components/IndexNote.astro";
       .note-inner {
         grid-template-columns: 1fr;
         padding-bottom: 0%;
+      }
+
+      .holder {
+        position: absolute;
+        width: 78%;
+        place-self: center;
+        top: -75%;
+      }
+
+      .intro_image {
+        margin-top: 50%;
       }
     }
 
@@ -514,5 +556,13 @@ import IndexNote from "../components/IndexNote.astro";
         -webkit-text-stroke: 0px;
       }
     }
+
+    /* Tilføj til din eksisterende style sektion */
+
+    /* Fix AOS spacing problemer */
+    /* [data-aos] {
+      margin: 0 !important;
+      padding: 0 !important;
+    } */
   </style>
 </Layout>

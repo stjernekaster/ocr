@@ -3,7 +3,6 @@ import Layout from "../../layouts/Layout.astro";
 import Back from "../../components/Back.astro";
 ---
 
-<Back url="/cv/" />
 <Layout title="RESUME" meta="Mine faglige kompetencer">
   <div class="papers">
     <div class="paper">
@@ -101,6 +100,7 @@ import Back from "../../components/Back.astro";
     </div>
   </div>
 </Layout>
+<Back url="/cv/" />
 
 <script is:inline>
   document.addEventListener("DOMContentLoaded", () => {
@@ -266,6 +266,7 @@ import Back from "../../components/Back.astro";
       grid-template-columns: auto;
       gap: 10vw;
       padding: 5vh 0;
+      margin-top: 20%;
     }
 
     .paper {

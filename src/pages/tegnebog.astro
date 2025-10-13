@@ -18,7 +18,7 @@ import IdCardMap from "../components/IdCardMap.astro";
         />
         <!-- Pink -->
         <IdCard
-          profil="/assets/cards/oscar.webp"
+          profil="/assets/cards/oscar2.webp"
           nummer="0001"
           fornavn="Oscar"
           efternavn="Laursen"
@@ -85,7 +85,11 @@ import IdCardMap from "../components/IdCardMap.astro";
     </div>
   </section>
   <section class="display-none">
-    {cards.map((card) => <IdCardMap {...card} />)}
+    {
+      cards
+        .filter((card) => card.id !== 0) // Filtrer ud kort med id=0
+        .map((card) => <IdCardMap {...card} />)
+    }
   </section>
 </Layout>
 
@@ -145,30 +149,27 @@ import IdCardMap from "../components/IdCardMap.astro";
             img.style.transition = "transform 0.7s, opacity 0.7s";
             setTimeout(() => {
               img.style.display = "none";
-            }, 700); // Skjul purses helt efter transition
+            }, 700);
           });
 
-          // 2. Flyt kortene til grid-positioner (behold absolute)
+          // 2. Flyt kortene til grid-positioner
           if (isMobile) {
-            // Mobilversion - kort placeret vertikalt under hinanden
-            cards[0].style.transform = "translate(-50%, -140%)"; // Pink
-            cards[1].style.transform = "translate(-50%, -19%)"; // Gul
-            cards[2].style.transform = "translate(-50%, 104%)"; // Blå
+            cards[0].style.transform = "translate(-50%, -140%)";
+            cards[1].style.transform = "translate(-50%, -19%)";
+            cards[2].style.transform = "translate(-50%, 104%)";
           } else {
-            // Desktop version - kort placeret horisontalt ved siden af hinanden
-            cards[0].style.transform = "translate(-169%, -133%)"; // Pink
-            cards[1].style.transform = "translate(-50%, -133%)"; // Gul
-            cards[2].style.transform = "translate(69%, -133%)"; // Blå
+            cards[0].style.transform = "translate(-169%, -133%)";
+            cards[1].style.transform = "translate(-50%, -133%)";
+            cards[2].style.transform = "translate(69%, -133%)";
           }
 
           cards.forEach((c) => {
             c.style.transition = "transform 0.8s";
-            // Fjern hover-lyttere
             c.removeEventListener("mouseenter", onEnter);
             c.removeEventListener("mouseleave", onLeave);
           });
 
-          // 3. Når transitionen er færdig, fade ud, skift til grid, fade ind
+          // 3. Efter transition, skift til grid med alle kort
           setTimeout(() => {
             cards.forEach((c) => {
               c.style.transition = "opacity 0.2s";
@@ -176,35 +177,51 @@ import IdCardMap from "../components/IdCardMap.astro";
             });
 
             setTimeout(() => {
+              // Skjul de første 3 kort
               cards.forEach((c) => {
-                c.style.position = "relative";
-                c.style.removeProperty("top");
-                c.style.removeProperty("left");
-                c.style.removeProperty("transform");
-                c.style.removeProperty("z-index");
-                c.classList.add("grid-mode");
-                c.style.transition = "opacity 0.2s";
                 c.style.display = "none";
               });
+
               const tegnebog = document.getElementById("tegnebog");
               if (tegnebog) {
                 tegnebog.classList.remove("middle");
               }
-              // Skjul aspect-ratio-container
+
               document.querySelector(".aspect-ratio-container").style.display =
                 "none";
-
-              // Genaktivér scrolling på body
               document.body.style.overflow = "auto";
 
-              // Find sektionen og tilføj grid2-klassen
+              // Find grid sektionen og vis alle kort
               const mapSection = document.querySelector("section.display-none");
               if (mapSection) {
                 mapSection.classList.remove("display-none");
                 mapSection.classList.add("grid");
+
+                // Vis de første 3 kort fra mappet
+                const allCards =
+                  mapSection.querySelectorAll('[id^="card-map-"]');
+                const shuffledCards = Array.from(allCards);
+
+                // Behold de første 3 kort i rækkefølge
+                const firstThree = shuffledCards.slice(0, 3);
+
+                // Bland resten af kortene
+                const remaining = shuffledCards.slice(3);
+                for (let i = remaining.length - 1; i > 0; i--) {
+                  const j = Math.floor(Math.random() * (i + 1));
+                  [remaining[i], remaining[j]] = [remaining[j], remaining[i]];
+                }
+
+                // Kombiner første 3 + shuffled remaining
+                const orderedCards = [...firstThree, ...remaining];
+
+                // Genopret DOM rækkefølge
+                orderedCards.forEach((card) => {
+                  mapSection.appendChild(card);
+                });
               }
-            }, 0); // fade ud, skift, fade ind
-          }, 700); // matcher din transition-tid
+            }, 0);
+          }, 700);
         },
         { once: true },
       );

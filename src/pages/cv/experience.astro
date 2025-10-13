@@ -5,7 +5,6 @@ import DragElement from "../../components/DragElement.astro";
 import Back from "../../components/Back.astro";
 ---
 
-<Back url="/cv/" />
 <Layout title="RESUME" meta="Mine faglige kompetencer">
   <div class="container">
     <div class="paper1">
@@ -141,6 +140,7 @@ import Back from "../../components/Back.astro";
     </div>
   </div>
 </Layout>
+<Back url="/cv/" />
 
 <!-- Flamme script -->
 <script is:inline>
@@ -190,40 +190,45 @@ import Back from "../../components/Back.astro";
   });
 </script>
 
-<!-- Opdateret Horizontal Scroll Script -->
+<!-- Opdateret Horizontal Scroll Script - kun desktop -->
 <script is:inline>
   document.addEventListener("DOMContentLoaded", () => {
     const container = document.querySelector(".container");
 
     if (!container) return;
 
-    // Horizontal scroll ved wheel event
-    container.addEventListener(
-      "wheel",
-      (e) => {
-        // Tjek om det er vertikal scroll (deltaY) eller horizontal scroll (deltaX)
-        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-          // Vertikal scroll - konverter til horizontal
-          e.preventDefault();
-          const scrollAmount = e.deltaY;
-          container.scrollLeft += scrollAmount;
-        } else {
-          // Horizontal scroll - lad den være normal
-          // Ikke preventDefault() - lad browseren håndtere det naturligt
-        }
-      },
-      { passive: false },
-    );
+    // Tjek om det er desktop (over 800px)
+    const isDesktop = () => window.innerWidth > 800;
 
-    // Smooth scroll med piletaster
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowLeft") {
-        e.preventDefault();
-        container.scrollLeft -= 100;
-      } else if (e.key === "ArrowRight") {
-        e.preventDefault();
-        container.scrollLeft += 100;
-      }
+    // Kun kør horizontal scroll på desktop
+    if (isDesktop()) {
+      container.addEventListener(
+        "wheel",
+        (e) => {
+          if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+            e.preventDefault();
+            const scrollAmount = e.deltaY;
+            container.scrollLeft += scrollAmount;
+          }
+        },
+        { passive: false },
+      );
+
+      // Piletaster kun på desktop
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          container.scrollLeft -= 100;
+        } else if (e.key === "ArrowRight") {
+          e.preventDefault();
+          container.scrollLeft += 100;
+        }
+      });
+    }
+
+    // Opdater ved resize
+    window.addEventListener("resize", () => {
+      // Kan tilføje logik her hvis nødvendigt
     });
   });
 </script>
@@ -514,8 +519,9 @@ import Back from "../../components/Back.astro";
       display: grid;
       justify-content: start;
       align-items: center;
-      overflow-x: auto;
-      overflow-y: hidden;
+      /* Ændret overflow for mobil: */
+      overflow-x: hidden; /* Skjul horizontal scroll på mobil */
+      overflow-y: auto; /* Tillad vertikal scroll på mobil */
       gap: 10vh;
       grid-template-rows: auto auto auto auto;
       grid-template-columns: auto;

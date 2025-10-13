@@ -1,11 +1,24 @@
 ---
+//@ts-nocheck
 import Layout from "../../layouts/Layout.astro";
 import ArtCard from "../../components/ArtCard.astro";
 import artworks from "../../database/artworks.jsx";
 import Back from "../../components/Back.astro";
+
+// Shuffle funktionen
+function shuffleArray(array) {
+  const shuffled = [...array]; // Lav en kopi
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+// Bland artworks arrayet
+const shuffledArtworks = shuffleArray(artworks);
 ---
 
-<Back url="/cv/" back="CV" page="Øvrige projekter" />
 <Layout title="RESUME" meta="Mine faglige kompetencer">
   <div class="title">
     <img src="/assets/title_projects.webp" alt="" />
@@ -21,9 +34,14 @@ import Back from "../../components/Back.astro";
   </div>
   <div class="space"></div>
   <div class="flex">
-    {artworks.map((card, index) => <ArtCard {...card} number={index + 1} />)}
+    {
+      shuffledArtworks.map((card, index) => (
+        <ArtCard {...card} number={index + 1} />
+      ))
+    }
   </div>
 </Layout>
+<Back url="/cv/" back="CV" page="Øvrige projekter" />
 
 <style>
   .title {
@@ -81,10 +99,10 @@ import Back from "../../components/Back.astro";
   body {
     overflow-x: hidden;
   }
-</style>
 
-<!-- Tilføj til <head> i Layout.astro -->
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-/>
+  @media (max-width: 800px) {
+    .title {
+      margin-top: 20%;
+    }
+  }
+</style>

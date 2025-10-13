@@ -1,0 +1,354 @@
+---
+const {
+  profil,
+  nummer,
+  fornavn,
+  efternavn,
+  bydel_by,
+  fodselsdato,
+  sex,
+  hgt,
+  eyes,
+  taget,
+  givet,
+  baggrund,
+  tlf,
+} = Astro.props;
+---
+
+<div class="flip-card">
+  <div class="flip-card-inner">
+    <!-- FORSIDE -->
+    <div class="flip-card-front" style={`background-color: ${baggrund};`}>
+      <div class="grid_3-6">
+        <div>
+          <div class="flex_row">
+            <p class="arial">★☆★★</p>
+            <img src="/assets/logo.svg" alt="" class="logo" />
+          </div>
+          <img class="portrait" src={profil} alt="" />
+        </div>
+        <div class="max">
+          <div style="margin-bottom: 0.5vw;">
+            <h1>Identifikation</h1>
+            <h2>Nummer #{nummer}</h2>
+          </div>
+          <div style="margin-bottom: 0.5vw;">
+            <h3>{fornavn}</h3>
+            <h3>{efternavn}</h3>
+          </div>
+          <div style="margin-bottom: 0.5vw;">
+            <h3>{bydel_by}</h3>
+            <h3>F.D. {fodselsdato}</h3>
+          </div>
+          <div class="flex_row2">
+            <div>
+              <h3>SEX</h3>
+              <h3>{sex}</h3>
+            </div>
+            <div>
+              <h3>Hgt</h3>
+              <h3>{hgt}</h3>
+            </div>
+            <div>
+              <h3>Eyes</h3>
+              <h3>{eyes}</h3>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h4>{fornavn}</h4>
+        </div>
+        <div class="flex_row2" style="gap: 0.4vw;">
+          <p>UDS: {taget}</p>
+          <p class="red">UDL: {givet}</p>
+        </div>
+      </div>
+      <p class="star">✪</p>
+      <div class="portrait-mini">
+        <img src="/assets/noise.webp" alt="" class="noise" />
+        <img src={profil} alt="" />
+      </div>
+      <img src="/assets/rat.webp" alt="" class="rat" />
+      <img src="/assets/city.webp" alt="" class="city" />
+      <div class="card-overlay"></div>
+    </div>
+
+    <style>
+      /* FLIP-CARD CSS */
+      .flip-card {
+        width: 22vw;
+        height: 14vw;
+        overflow: hidden;
+        margin-top: 5%;
+        border: 1px solid #ccc;
+      }
+
+      .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+      }
+
+      .flip-card-front,
+      .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden; /* Safari */
+        backface-visibility: hidden;
+        box-sizing: border-box;
+        padding: 1vw;
+      }
+
+      .flip-card-front {
+        /* Behold alle dine nuværende card styles */
+      }
+
+      .flip-card-back {
+        transform: rotateY(180deg);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      /* Behold dine eksisterende styles */
+      .card-overlay {
+        width: 100%;
+        height: 100%;
+        border-radius: 0.4rem;
+        background-image: url(/assets/dots.webp);
+        background-size: cover;
+        mix-blend-mode: multiply;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 5%;
+        pointer-events: none;
+      }
+
+      .card {
+        width: 24vw;
+        height: 15.2vw;
+        padding: 1vw;
+        border-radius: 0.4rem;
+        box-sizing: border-box;
+        filter: drop-shadow(0 0px 5px rgba(0, 0, 0, 0.85));
+      }
+
+      .card.grid-mode {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        transform: none !important;
+        z-index: auto !important;
+      }
+
+      .grid_3-6 {
+        display: grid;
+        grid-template-columns: 3fr 6fr;
+        gap: 0.5rem;
+      }
+
+      .flex_row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .flex_row2 {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 1vw;
+      }
+
+      .arial {
+        font-family: Arial, sans-serif;
+        font-size: calc(0.8cqw * var(--font-scale));
+        line-height: 0px;
+        justify-content: center;
+      }
+
+      .arial2 {
+        font-family: owners-xxwide, sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: calc(0.6cqw * var(--font-scale));
+        justify-content: center;
+        text-align: center;
+        margin-top: 4%;
+        text-decoration: none;
+        color: black;
+      }
+
+      .logo {
+        width: 40%;
+        height: auto;
+        margin-top: 3%;
+      }
+
+      .logo2 {
+        width: 15%;
+        height: auto;
+        margin: 5% 0 3% 0;
+      }
+
+      .portrait {
+        width: 100%;
+        height: auto;
+        border-radius: 5px;
+        margin-top: 0.1rem;
+      }
+
+      .portrait-mini {
+        position: absolute;
+        top: 28%;
+        right: 9%;
+        width: 17%;
+        height: auto;
+        opacity: 60%;
+      }
+
+      .portrait,
+      .portrait-mini {
+        filter: grayscale(0.2);
+      }
+
+      .noise {
+        mix-blend-mode: multiply;
+        position: absolute;
+      }
+
+      .rat {
+        position: absolute;
+        bottom: 2%;
+        right: 2%;
+        width: 25%;
+        height: auto;
+        opacity: 30%;
+      }
+
+      .rat2 {
+        position: absolute;
+        top: 50%;
+        right: 50%;
+        width: 45%;
+        transform: translate(50%, -50%);
+        height: auto;
+        opacity: 10%;
+      }
+
+      .city {
+        position: absolute;
+        bottom: 12%;
+        left: 0;
+        width: 75%;
+        height: auto;
+        z-index: -1;
+        mix-blend-mode: multiply;
+        opacity: 40%;
+      }
+
+      .barcode {
+        width: 5vw;
+        height: auto;
+        margin-top: 1vw;
+        mix-blend-mode: multiply;
+      }
+
+      .max {
+        background-color: transparent;
+      }
+
+      .oval {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 80%;
+        height: auto;
+        transform: translate(-50%, -50%);
+        opacity: 0.05;
+      }
+
+      /* Skrifttyper med skalering */
+      h1 {
+        font-family: owners-wide, sans-serif;
+        font-weight: 600;
+        font-style: normal;
+        text-transform: uppercase;
+        font-size: calc(1.1cqw * var(--font-scale));
+      }
+
+      h2 {
+        font-family: owners-narrow, sans-serif;
+        font-weight: 500;
+        font-style: normal;
+        text-transform: uppercase;
+        font-size: calc(1.1cqw * var(--font-scale));
+      }
+
+      h3 {
+        font-family: owners-narrow, sans-serif;
+        font-weight: 500;
+        font-style: normal;
+        text-transform: uppercase;
+        font-size: calc(0.9cqw * var(--font-scale));
+      }
+
+      h4 {
+        font-family: "AstonScriptBold";
+        text-align: center;
+        font-size: calc(1.3cqw * var(--font-scale));
+        line-height: 1;
+      }
+
+      p {
+        font-family: owners-narrow, sans-serif;
+        font-weight: 700;
+        font-style: normal;
+        text-transform: uppercase;
+        font-size: calc(0.75cqw * var(--font-scale));
+      }
+
+      .red {
+        color: red;
+      }
+
+      .star {
+        position: absolute;
+        top: 2.2%;
+        right: 4%;
+        font-size: calc(3cqw * var(--font-scale));
+      }
+
+      /* Media query for mobile */
+      @media (max-width: 800px) {
+        :root {
+          --font-scale: 2; /* 25% større fontstørrelser på mobil */
+        }
+
+        .flip-card {
+          width: 45vw;
+          height: 28.5vw;
+        }
+
+        /* Juster eventuelle mobilspecifikke ting fra IdCardMap */
+        .portrait-mini {
+          width: 17%;
+        }
+
+        .logo,
+        .logo2 {
+          width: 40%;
+        }
+      }
+    </style>
+  </div>
+</div>

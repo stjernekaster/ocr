@@ -1,8 +1,24 @@
 // data.jsx
 const events = [
   {
+    id: 0,
+    profil: "/assets/cards/oscar2.webp",
+    nummer: "0001",
+    fornavn: "Oscar",
+    efternavn: "Laursen",
+    bydel_by: "Amager, København",
+    fodselsdato: "15/10/2001",
+    sex: "M",
+    hgt: "187",
+    eyes: "Blue",
+    taget: "22/07/2025",
+    givet: "22/07/2035",
+    baggrund: "#f9f9f9",
+    tlf: "50868563",
+  },
+  {
     id: 1,
-    profil: "/assets/cards/oscar.webp",
+    profil: "/assets/cards/oscar2.webp",
     nummer: "0001",
     fornavn: "Oscar",
     efternavn: "Laursen",

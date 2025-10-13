@@ -1,0 +1,361 @@
+---
+//@ts-nocheck
+import artworks from "../../database/artworks.jsx"; // Fjern { } - det er default export
+import Layout from "../../layouts/Layout.astro";
+import Back from "../../components/Back.astro";
+
+export async function getStaticPaths() {
+  const paths = artworks.map((artwork) => ({
+    params: { id: artwork.id.toString() },
+    props: { artwork },
+  }));
+  return paths; // Returner bare paths - fallback er ikke nødvendig
+}
+
+const { artwork } = Astro.props;
+---
+
+<Layout
+  title={`Projekt ${artwork.id}`}
+  meta={`Detaljer om værket: ${artwork.titel}`}
+>
+  <section class="artwork-details">
+    <div class="grid_7-3">
+      <div class="column_1">
+        <div
+          style="display: grid; grid-template-columns: 2fr 3fr; gap: 2%; padding: 2%"
+        >
+          <div style="border: 2px solid black; aspect-ratio: 1/1">
+            <img src={artwork.billede} alt={artwork.title} class="billede_1" />
+          </div>
+          <div class="info">
+            <div class="flex">
+              <h2>ID:</h2><div class="line_up"></div><h3>{artwork.id}</h3>
+            </div>
+            <div class="line"></div>
+            <div class="flex">
+              <h2>TITEL:</h2><div class="line_up"></div><h3>{artwork.titel}</h3>
+            </div>
+            <div class="line"></div>
+            <div class="flex">
+              <h2>KUNSTNER:</h2><div class="line_up"></div><h3>
+                {artwork.kunstnere}
+              </h3>
+            </div>
+            <div class="line"></div>
+            <div class="flex">
+              <h2>ÅRSTAL:</h2><div class="line_up"></div><h3>
+                {artwork.årstal}
+              </h3>
+            </div>
+            <div class="line"></div>
+            <div class="flex">
+              <h2>TAGS:</h2><div class="line_up"></div><h3>
+                {artwork.tags.join(", ")}
+              </h3>
+            </div>
+          </div>
+          <div
+            style="border: 2px solid black; grid-column: 1 / span 2; padding: 10%; margin-bottom: 2%;"
+          >
+            <p>{artwork.beskrivelse}</p>
+            {
+              artwork.youtubeLink && (
+                <>
+                  <br />
+                  <p class="youtube">
+                    Videoen kan findes{" "}
+                    <a href={artwork.youtubeLink} target="_blank">
+                      her
+                    </a>
+                  </p>
+                </>
+              )
+            }
+          </div>
+        </div>
+      </div>
+      <div class="column_2">
+        {
+          artwork.billeder &&
+            artwork.billeder.map((billeder) => (
+              <img
+                src={billeder}
+                alt={`${artwork.titel} - billede`}
+                class="billeder"
+              />
+            ))
+        }
+      </div>
+    </div>
+  </section>
+</Layout>
+<Back />
+
+<div id="lightbox" class="lightbox">
+  <img class="lightbox-content" id="lightbox-img" />
+</div>
+
+<script is:inline>
+  document.addEventListener("DOMContentLoaded", () => {
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightbox-img");
+
+    // Tilføj click event til alle billeder
+    const allImages = document.querySelectorAll(".billeder, .billede_1");
+
+    allImages.forEach((img) => {
+      img.addEventListener("click", () => {
+        lightbox.style.display = "block";
+        lightboxImg.src = img.src;
+        lightboxImg.alt = img.alt;
+        document.body.style.overflow = "hidden";
+      });
+    });
+
+    // Luk lightbox ved klik hvor som helst på skærmen
+    lightbox.addEventListener("click", () => {
+      lightbox.style.display = "none";
+      document.body.style.overflow = "auto";
+    });
+
+    // Luk lightbox med ESC tast
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        lightbox.style.display = "none";
+        document.body.style.overflow = "auto";
+      }
+    });
+  });
+</script>
+
+<style>
+  .artwork-details {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .grid_7-3 {
+    display: grid;
+    grid-template-columns: 7fr 4fr;
+    gap: 1%;
+    max-width: 70%;
+    margin: 0 auto;
+    padding: 10vh 2vw;
+  }
+
+  .column_1,
+  .column_2 {
+    border: 2px solid black;
+  }
+
+  .billede_1 {
+    height: auto;
+    display: block;
+  }
+
+  .info {
+    border: 2px solid black;
+    justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+    padding: 2% 0;
+  }
+
+  .flex {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    position: relative;
+  }
+
+  h2 {
+    font-family: owners-xxwide, sans-serif;
+    font-weight: 100;
+    font-size: 0.7cqw;
+    text-align: left;
+    padding-left: 2%;
+    margin-top: 7%;
+  }
+
+  h3 {
+    font-family: owners-xxwide, sans-serif;
+    font-weight: normal;
+    position: absolute;
+    left: 32%;
+    text-wrap: nowrap;
+    line-height: 1;
+    font-size: 0.9cqw;
+    margin-top: 5%;
+  }
+
+  .line {
+    height: 2px;
+    background-color: black;
+  }
+
+  .line_up {
+    height: 140%;
+    background-color: black;
+    width: 2px;
+    position: absolute;
+    margin-top: -0.3%;
+    left: 30%;
+  }
+
+  .column_2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: min-content; /* Tilføj denne - lader rækkerne tilpasse sig indholdet */
+    width: 100%;
+    padding: 3%;
+    gap: 10px;
+    box-sizing: border-box;
+  }
+
+  .billeder {
+    width: 100%;
+    height: auto; /* Ændret tilbage til auto */
+    aspect-ratio: 1/1; /* Dette sikrer kvadratisk form */
+    display: block;
+    object-fit: cover;
+    border: 2px solid black;
+    box-sizing: border-box;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  /* Lightbox styles */
+  .lightbox {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+  }
+
+  .lightbox-content {
+    margin: auto;
+    display: block;
+    width: 90%;
+    max-width: 1200px;
+    max-height: 90%;
+    object-fit: contain;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Gør billeder klikbare */
+  .billeder,
+  .billede_1 {
+    cursor: pointer;
+    transition: opacity 0.3s;
+  }
+
+  .billeder:hover,
+  .billede_1:hover {
+    opacity: 0.8;
+  }
+
+  @media (max-width: 800px) {
+    .artwork-details {
+      width: 100vw;
+      height: auto; /* Ændret fra 100vh til auto */
+      overflow: visible; /* Ændret fra hidden til visible */
+    }
+
+    .grid_7-3 {
+      display: block; /* Opløser grid - bliver til normal block layout */
+      max-width: 85%; /* Bredere på mobil */
+      margin: 0 auto;
+      gap: 0; /* Fjern gap */
+      margin-top: 15%;
+    }
+
+    .column_1 {
+      width: 100%;
+      margin-bottom: 20px; /* Tilføj afstand mellem column_1 og column_2 */
+    }
+
+    .column_1 > div {
+      display: block !important; /* Opløser det indre grid også */
+      padding: 5% !important;
+    }
+
+    .column_1 > div > div:first-child {
+      margin-bottom: 20px; /* Afstand mellem billede og info */
+    }
+
+    .info {
+      width: 100%;
+      padding: 5% !important;
+    }
+
+    .column_2 {
+      width: 100%;
+      grid-template-columns: 1fr; /* En kolonne på mobil */
+      padding: 5%;
+      gap: 15px;
+    }
+
+    /* Justér font-størrelser på mobil */
+    h2 {
+      font-size: 3vw; /* Ændret fra cqw til vw på mobil */
+    }
+
+    h3 {
+      font-size: 0.5cqw; /* Ændret fra cqw til vw på mobil */
+      position: relative; /* Ændret fra absolute */
+      left: auto; /* Reset left positioning */
+      margin-top: 6%;
+      padding-left: 2%;
+      text-wrap: wrap; /* Tillad text wrapping på mobil */
+    }
+
+    .line_up {
+      display: none; /* Skjul vertikale linjer på mobil */
+    }
+
+    /* Justér beskrivelse boks */
+    .column_1 > div > div:last-child {
+      margin-top: 20px;
+      padding: 8% !important;
+    }
+
+    /* Lightbox justerings på mobil */
+    .lightbox-content {
+      width: 95%;
+      max-height: 85%;
+    }
+  }
+
+  /* Ekstra lille skærme */
+  @media (max-width: 480px) {
+    .grid_7-3 {
+      padding: 3vh 1vw;
+    }
+
+    h2 {
+      font-size: 4vw;
+    }
+
+    h3 {
+      font-size: 5vw;
+    }
+
+    .column_1 > div {
+      padding: 3% !important;
+    }
+
+    .info {
+      padding: 3% !important;
+    }
+  }
+</style>
