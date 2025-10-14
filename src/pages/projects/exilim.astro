@@ -1,0 +1,281 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import FilmRoll from "../../components/FilmRoll.astro";
+import film from "../../database/film.jsx";
+---
+
+<Layout title="02" meta="Et galleri af fotografier fra vesterhavet i Jylland">
+  <div class="image-container">
+    <img src="/assets/casio_1.webp" alt="" class="image_1" />
+    <img src="/assets/casio_camera.gif" alt="" class="image_gif hidden" />
+    <img src="/assets/casio_2.webp" alt="" class="image_2 hidden" />
+    <div class="flex_back flex_hidden">
+      <div class="black_screen"></div>
+      {
+        film
+          .sort(() => Math.random() - 0.5)
+          .map((film) => <FilmRoll {...film} border="" />)
+      }
+      <FilmRoll billede="/film/end_piece.svg" display="hidden" border="0px" />
+    </div>
+    <h2 class="h2">Udforsk min kamerarulle</h2>
+  </div>
+
+  <!-- Tilføj lightbox HTML til exilim.astro -->
+  <div id="lightbox" class="lightbox">
+    <img class="lightbox-content" id="lightbox-img" />
+  </div>
+</Layout>
+
+<script is:inline>
+  document.addEventListener("DOMContentLoaded", () => {
+    const image1 = document.querySelector(".image_1");
+    const imageGif = document.querySelector(".image_gif");
+    const image2 = document.querySelector(".image_2");
+    const flexBack = document.querySelector(".flex_back");
+    const blackScreen = document.querySelector(".black_screen");
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightbox-img");
+
+    let hasStarted = false;
+
+    image1.addEventListener("click", () => {
+      if (!hasStarted) {
+        hasStarted = true;
+
+        image1.style.pointerEvents = "none";
+        image1.style.cursor = "default";
+
+        image1.classList.add("hidden");
+        imageGif.classList.remove("hidden");
+
+        const gifDuration = 1100;
+
+        setTimeout(() => {
+          imageGif.classList.add("hidden");
+          image2.classList.remove("hidden");
+
+          // Gør image_2 gennemsigtig for klik
+          image2.style.pointerEvents = "none";
+
+          flexBack.classList.remove("flex_hidden");
+
+          // Så vis black_screen og start fade
+          blackScreen.classList.add("show");
+          document.querySelector(".h2").classList.add("show");
+
+          // Start opening animation efter et kort delay
+          setTimeout(() => {
+            flexBack.classList.add("opening");
+          }, 100);
+
+          // Tilføj lightbox funktionalitet efter opening animation
+          setTimeout(() => {
+            const filmImages = document.querySelectorAll(".flex_back img");
+
+            filmImages.forEach((img) => {
+              img.style.cursor = "pointer";
+
+              img.addEventListener("click", () => {
+                lightbox.style.display = "block";
+                lightboxImg.src = img.src;
+                lightboxImg.alt = img.alt;
+                document.body.style.overflow = "hidden";
+              });
+            });
+          }, 3100);
+        }, gifDuration);
+      }
+    });
+
+    // Lightbox functionality
+    lightbox.addEventListener("click", () => {
+      lightbox.style.display = "none";
+      document.body.style.overflow = "auto";
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        lightbox.style.display = "none";
+        document.body.style.overflow = "auto";
+      }
+    });
+  });
+</script>
+
+<style>
+  body {
+    margin: 0 auto;
+    padding: 0;
+    /* Fjernet sort baggrund og centrering */
+  }
+
+  .image-container {
+    position: relative;
+    width: 35%;
+    height: auto;
+    margin: 0 auto;
+    padding-top: 15%;
+    /* Fjernet max constraints og centrering */
+  }
+
+  .image_1,
+  .image_gif,
+  .image_2 {
+    width: 100%;
+    height: auto;
+    /* Fjernet max constraints */
+    object-fit: contain;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    transition: 0.3s;
+  }
+
+  .image_2 {
+    cursor: default;
+  }
+
+  .image_1,
+  .image_2 {
+    filter: drop-shadow(10px 10px 5px rgba(0, 0, 0, 0.24));
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .image_1:hover {
+    scale: 1.05;
+    transition: 0.3s;
+  }
+
+  .flex_back {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: nowrap;
+    position: absolute;
+    top: 54%;
+    left: 21%;
+    width: 1050%;
+    padding-right: 50%;
+    clip-path: inset(0 95% 0 0); /* Starter helt skjult fra højre */
+    transition: clip-path 3s ease-in-out; /* Ændret til 3 sekunder */
+  }
+
+  .flex_back.opening {
+    clip-path: inset(0 0% 0 0); /* Åbner sig gradvist mod højre */
+  }
+
+  .flex_back.flex_hidden {
+    display: none;
+  }
+
+  .image_2 {
+    position: relative;
+    z-index: 2; /* Foran flex_back */
+    pointer-events: none;
+  }
+
+  @media (max-width: 800px) {
+    .image-container {
+      width: 80%;
+      padding-top: 40%;
+    }
+
+    .flex_back {
+      top: 70%;
+      width: 300%;
+      overflow-x: auto;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .image-container {
+      transform: rotate(90deg);
+      transform-origin: center center; /* Roterer omkring centrum */
+    }
+
+    /* Hvis du vil justere position efter rotation: */
+    .image-container {
+      transform: rotate(90deg);
+      transform-origin: center center;
+      width: 100vh; /* Swap width/height efter rotation */
+      height: 100vw;
+      margin: calc((100vw - 100vh) / 2) calc((100vh - 100vw) / 2); /* Centrer efter rotation */
+    }
+  }
+
+  /* Lightbox styles */
+  .lightbox {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+
+  .lightbox-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70%;
+    height: auto;
+    aspect-ratio: 4/3;
+    padding: 5%;
+  }
+
+  .black_screen {
+    position: absolute;
+    top: 7%;
+    left: -0.1%;
+    width: 4.2%;
+    height: auto;
+    aspect-ratio: 4/3;
+    background-color: #637572;
+    z-index: 1;
+    display: none;
+    pointer-events: none;
+  }
+
+  .show {
+    display: block;
+    animation: fadeOut 0.8s forwards;
+    pointer-events: none;
+  }
+
+  h2 {
+    text-align: center;
+    font-family: owners-wide, sans-serif;
+    font-size: calc(1.15cqw * var(--font-scale));
+    line-height: 1.4;
+    font-weight: normal;
+    text-transform: uppercase;
+    position: absolute;
+    place-self: center;
+    margin: 0 auto;
+    margin-top: 10%;
+  }
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  .image_gif {
+    filter: blur(0.5px); /* Meget let blur */
+    /* eller */
+    image-rendering: smooth; /* Blødere rendering */
+    /* eller */
+    filter: contrast(0.9) brightness(1.1); /* Justér kontrast */
+  }
+</style>
