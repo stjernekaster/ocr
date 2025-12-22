@@ -175,7 +175,7 @@ const events = [
     eyes: "Blue",
     taget: "21/12/2025",
     givet: "21/12/2035",
-    baggrund: "#E3E0F4",
+    baggrund: "#F4E0E5",
     tlf: "+316 18142787",
   },
   // {
