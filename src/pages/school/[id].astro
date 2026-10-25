@@ -1,0 +1,624 @@
+---
+import schoolProjects from "../../database/school.jsx";
+import Layout from "../../layouts/Layout.astro";
+
+export function getStaticPaths() {
+  return schoolProjects.map((project) => ({
+    params: { id: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const projectImages = [project.billede, ...(project.billeder ?? [])].filter(
+  (image): image is string => typeof image === "string" && image.length > 0,
+);
+---
+
+<Layout title={project.titel} meta={`Skoleprojekt: ${project.titel}`}>
+  <main class="school-detail">
+    <div class="detail-title-area">
+      <a class="back-link" href="/school">Tilbage</a>
+      <header class="detail-heading">
+        <h1>{project.titel}</h1>
+        <time>{project.dato}</time>
+      </header>
+    </div>
+
+    <section
+      class="detail-cover"
+      aria-label={`Billeder fra ${project.titel}`}
+      style={`--shadow-color: ${project.skyggefarve}`}
+    >
+      <span class="cover-shadow" aria-hidden="true"></span>
+      {
+        projectImages.length > 0 ? (
+          <div class="project-carousel" data-project-carousel>
+            <div class="carousel-stage">
+              {projectImages.map((image, index) => (
+                <button
+                  class:list={[
+                    "carousel-slide",
+                    index === 0 && "is-current",
+                    index === 1 && "is-next",
+                    index > 1 &&
+                      index === projectImages.length - 1 &&
+                      "is-previous",
+                    index > 1 &&
+                      index < projectImages.length - 1 &&
+                      "is-hidden",
+                  ]}
+                  type="button"
+                  data-carousel-slide
+                  data-index={index}
+                  aria-label={`Vis billede ${index + 1} af ${projectImages.length}`}
+                  aria-pressed={index === 0}
+                  aria-hidden={index > 1 && index < projectImages.length - 1}
+                >
+                  <img
+                    src={image}
+                    alt={`${project.titel}, billede ${index + 1}`}
+                    loading={index === 0 ? "eager" : "lazy"}
+                  />
+                </button>
+              ))}
+            </div>
+            <nav class="carousel-controls" aria-label="Billedkarusel">
+              <button
+                class="carousel-arrow"
+                type="button"
+                data-carousel-direction="previous"
+                aria-label="Forrige billede"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path d="M8 4L16 12L8 20" />
+                </svg>
+              </button>
+              <button
+                class="carousel-arrow"
+                type="button"
+                data-carousel-direction="next"
+                aria-label="Næste billede"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path d="M8 4L16 12L8 20" />
+                </svg>
+              </button>
+            </nav>
+            <div
+              class="carousel-indicators"
+              role="group"
+              aria-label="Vælg billede"
+            >
+              {projectImages.map((_, index) => (
+                <button
+                  class="carousel-indicator"
+                  type="button"
+                  data-carousel-indicator
+                  data-index={index}
+                  aria-label={`Vis billede ${index + 1}`}
+                  aria-pressed={index === 0}
+                />
+              ))}
+            </div>
+          </div>
+        ) : (
+          <span class="image-placeholder">Projektbillede</span>
+        )
+      }
+    </section>
+
+    {project.beskrivelse && <p class="description">{project.beskrivelse}</p>}
+  </main>
+  <div
+    class="image-lightbox"
+    data-image-lightbox
+    role="dialog"
+    aria-modal="true"
+    aria-label="Billede i fuld skærm"
+    aria-hidden="true"
+    tabindex="-1"
+    hidden
+  >
+    <img class="lightbox-image" alt="" />
+  </div>
+</Layout>
+
+<script>
+  const carousel = document.querySelector<HTMLElement>(
+    "[data-project-carousel]",
+  );
+
+  if (carousel) {
+    const slides = Array.from(
+      carousel.querySelectorAll<HTMLButtonElement>("[data-carousel-slide]"),
+    );
+    const stage = carousel.querySelector<HTMLElement>(".carousel-stage");
+    const indicators = Array.from(
+      carousel.querySelectorAll<HTMLButtonElement>("[data-carousel-indicator]"),
+    );
+    const lightbox = document.querySelector<HTMLDivElement>(
+      "[data-image-lightbox]",
+    );
+    const lightboxImage =
+      lightbox?.querySelector<HTMLImageElement>(".lightbox-image");
+    let currentIndex = 0;
+    let returnFocus: HTMLButtonElement | null = null;
+    let previousBodyOverflow = "";
+
+    const closeLightbox = () => {
+      if (!lightbox || !lightboxImage) return;
+
+      lightbox.hidden = true;
+      lightbox.setAttribute("aria-hidden", "true");
+      lightboxImage.removeAttribute("src");
+      document.body.style.overflow = previousBodyOverflow;
+      returnFocus?.focus();
+      returnFocus = null;
+    };
+
+    const openLightbox = (slide: HTMLButtonElement) => {
+      const image = slide.querySelector<HTMLImageElement>("img");
+      if (!lightbox || !lightboxImage || !image) return;
+
+      returnFocus = slide;
+      previousBodyOverflow = document.body.style.overflow;
+      lightboxImage.src = image.currentSrc || image.src;
+      lightboxImage.alt = image.alt;
+      lightbox.hidden = false;
+      lightbox.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+      lightbox.focus();
+    };
+
+    const updateCarousel = () => {
+      if (!stage) return;
+      const sideOffset =
+        Number.parseFloat(
+          getComputedStyle(stage).getPropertyValue("--side-offset"),
+        ) || 55;
+
+      slides.forEach((slide, index) => {
+        let offset = index - currentIndex;
+        if (offset > slides.length / 2) offset -= slides.length;
+        if (offset < -slides.length / 2) offset += slides.length;
+        const isVisible = offset >= -1 && offset <= 1;
+
+        slide.style.setProperty("--carousel-offset", `${offset * sideOffset}%`);
+        slide.tabIndex = isVisible ? 0 : -1;
+        slide.classList.toggle("is-current", offset === 0);
+        slide.classList.toggle("is-previous", offset === -1);
+        slide.classList.toggle("is-next", offset === 1);
+        slide.classList.toggle(
+          "is-hidden",
+          offset !== 0 && offset !== -1 && offset !== 1,
+        );
+        slide.setAttribute("aria-pressed", String(offset === 0));
+        slide.setAttribute(
+          "aria-hidden",
+          String(offset !== 0 && offset !== -1 && offset !== 1),
+        );
+      });
+
+      indicators.forEach((indicator, index) => {
+        const isCurrent = index === currentIndex;
+        indicator.classList.toggle("is-current", isCurrent);
+        indicator.setAttribute("aria-pressed", String(isCurrent));
+      });
+    };
+
+    const moveCarousel = (direction: number) => {
+      currentIndex = (currentIndex + direction + slides.length) % slides.length;
+      updateCarousel();
+    };
+
+    carousel
+      .querySelectorAll<HTMLButtonElement>("[data-carousel-direction]")
+      .forEach((button) => {
+        button.addEventListener("click", () => {
+          moveCarousel(button.dataset.carouselDirection === "next" ? 1 : -1);
+        });
+      });
+
+    slides.forEach((slide) => {
+      slide.addEventListener("click", (event) => {
+        const slideIndex = Number(slide.dataset.index);
+        const clickedImage = event.target === slide.querySelector("img");
+
+        if (!clickedImage && event.detail !== 0) return;
+
+        if (slideIndex !== currentIndex) {
+          currentIndex = slideIndex;
+          updateCarousel();
+          return;
+        }
+
+        currentIndex = slideIndex;
+        updateCarousel();
+        openLightbox(slide);
+      });
+    });
+
+    indicators.forEach((indicator) => {
+      indicator.addEventListener("click", () => {
+        currentIndex = Number(indicator.dataset.index);
+        updateCarousel();
+      });
+    });
+
+    lightbox?.addEventListener("click", closeLightbox);
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && lightbox && !lightbox.hidden) {
+        closeLightbox();
+      }
+    });
+
+    updateCarousel();
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => stage?.classList.add("is-ready"));
+    });
+    window.addEventListener("resize", updateCarousel);
+  }
+</script>
+
+<style>
+  .school-detail {
+    --school-heading-font: "school-heading", owners-xxwide, sans-serif;
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 4rem 4vw 5rem;
+    color: #050505;
+  }
+
+  .detail-title-area {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    padding: 0 2.8vw;
+  }
+
+  .back-link {
+    display: block;
+    width: fit-content;
+    margin-bottom: 1rem;
+    color: grey;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 75%;
+    font-weight: 500;
+    text-decoration: underline;
+    transition: opacity 0.3s ease;
+  }
+
+  .back-link:hover {
+    opacity: 0.5;
+  }
+
+  .detail-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #666;
+  }
+
+  .detail-heading h1 {
+    min-width: 0;
+    flex: 1 1 auto;
+    margin: 0;
+    font-family: var(--school-heading-font);
+    font-size: 90px;
+    font-weight: 400;
+    line-height: 0.95;
+    text-transform: uppercase;
+  }
+
+  .detail-heading time {
+    flex: 0 0 auto;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  .detail-cover {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    place-items: center;
+    overflow: visible;
+    isolation: isolate;
+  }
+
+  .cover-shadow {
+    position: absolute;
+    z-index: 0;
+    top: 44%;
+    left: 50%;
+    width: min(20%, 560px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--shadow-color);
+    filter: blur(70px);
+    opacity: 0.75;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+  }
+
+  .project-carousel {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+  }
+
+  .carousel-stage {
+    --side-offset: 55%;
+    --side-offset-negative: -55%;
+    position: relative;
+    width: 100%;
+    height: min(68vh, 560px);
+    min-height: 380px;
+    overflow: visible;
+  }
+
+  .carousel-slide {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: grid;
+    width: min(48%, 580px);
+    height: 86%;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: default;
+    opacity: 0;
+    transform-origin: center;
+    transform: translate(calc(-50% + var(--carousel-offset, 0%)), -50%)
+      scale(0.52);
+    transition:
+      transform 550ms cubic-bezier(0.2, 0.7, 0.2, 1),
+      opacity 450ms ease,
+      filter 450ms ease;
+    visibility: hidden;
+  }
+
+  .carousel-stage:not(.is-ready) .carousel-slide {
+    transition: none;
+  }
+
+  .carousel-slide img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    pointer-events: auto;
+    cursor: pointer;
+    transform: translate(-50%, -50%) scale(1);
+    transition: transform 550ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .carousel-slide.is-current img {
+    cursor: zoom-in;
+    transform: translate(-50%, -50%) scale(0.6);
+  }
+
+  .carousel-slide.is-current {
+    z-index: 3;
+    opacity: 1;
+    transform: translate(calc(-50% + var(--carousel-offset, 0%)), -50%) scale(1);
+    visibility: visible;
+  }
+
+  .carousel-slide.is-previous {
+    z-index: 2;
+    opacity: 0.62;
+    filter: brightness(0.8);
+    --carousel-offset: var(--side-offset-negative);
+    visibility: visible;
+  }
+
+  .carousel-slide.is-next {
+    z-index: 2;
+    opacity: 0.62;
+    filter: brightness(0.8);
+    --carousel-offset: var(--side-offset);
+    visibility: visible;
+  }
+
+  .carousel-slide.is-hidden {
+    pointer-events: none;
+  }
+
+  .carousel-slide:focus-visible {
+    outline: 2px solid #050505;
+    outline-offset: 4px;
+  }
+
+  .carousel-controls {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: clamp(-130px, -12vh, -64px);
+  }
+
+  .carousel-arrow {
+    display: grid;
+    width: 40px;
+    height: 40px;
+    place-items: center;
+    border: 2px solid #000;
+    background: #fff;
+    border-radius: 50%;
+    color: #050505;
+    cursor: pointer;
+    transition: transform 160ms ease;
+  }
+
+  .carousel-arrow:hover {
+    transform: scale(1.05);
+  }
+
+  .carousel-arrow:focus-visible {
+    outline: 2px solid #050505;
+    outline-offset: 3px;
+  }
+
+  .carousel-arrow svg {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  [data-carousel-direction="previous"] svg {
+    transform: rotate(180deg);
+  }
+
+  .carousel-indicators {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    min-height: 16px;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    margin-top: 8px;
+  }
+
+  .carousel-indicator {
+    width: 6px;
+    height: 6px;
+    padding: 0;
+    border: 1px solid #050505;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+    transition:
+      transform 160ms ease,
+      background-color 160ms ease;
+  }
+
+  .carousel-indicator.is-current {
+    background: #050505;
+    transform: scale(1.2);
+  }
+
+  .carousel-indicator:focus-visible {
+    outline: 2px solid #050505;
+    outline-offset: 3px;
+  }
+
+  .image-placeholder {
+    display: grid;
+    width: min(36%, 360px);
+    min-height: 300px;
+    place-items: center;
+    border: 1px solid #666;
+    background: #fff;
+    color: #666;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 18px;
+  }
+
+  .description {
+    max-width: 760px;
+    margin: 2rem auto 4rem;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 21px;
+    line-height: 1.45;
+  }
+
+  .image-lightbox {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+
+  .image-lightbox:not([hidden]) {
+    display: block;
+  }
+
+  .lightbox-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70vw;
+    height: 90vh;
+    object-fit: contain;
+  }
+
+  @media (max-width: 1000px) {
+    .detail-heading h1 {
+      font-size: 68px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .school-detail {
+      padding: 6rem 5vw 3rem;
+    }
+
+    .detail-title-area {
+      padding-inline: 5vw;
+    }
+
+    .detail-heading {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .detail-heading h1 {
+      font-size: 42px;
+    }
+
+    .detail-cover {
+      padding: 2rem 0 1rem;
+    }
+
+    .carousel-stage {
+      --side-offset: 39%;
+      --side-offset-negative: -39%;
+      height: min(54vh, 400px);
+      min-height: 280px;
+      --side-offset: 39%;
+    }
+
+    .carousel-controls {
+      margin-top: -80px;
+    }
+
+    .carousel-slide {
+      width: 58%;
+      height: 84%;
+    }
+
+    .image-placeholder {
+      width: 58%;
+      min-height: 220px;
+    }
+
+    .description {
+      font-size: 18px;
+    }
+  }
+</style>

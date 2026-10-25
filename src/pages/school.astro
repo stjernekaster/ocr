@@ -1,0 +1,619 @@
+---
+import schoolProjects from "../database/school.jsx";
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout
+  title="SKOLEPROJEKTER"
+  meta="En oversigt over skoleprojekter på Det Kongelige Erhvervsakademi"
+>
+  <main class="school-page">
+    <header class="school-heading">
+      <h1>
+        <span class="title-desktop">Skoleprojekter</span>
+        <span class="title-mobile">Skole-<br />Projekter</span>
+      </h1>
+      <p>
+        En oversigt over alt mit arbejde fra Det Kongelige Erhvervsakademi<br
+          class="desktop-break"
+        /> på bachloruddannelsen Visuelt Design Og Interaktion
+      </p>
+    </header>
+
+    <nav class="school-filters" aria-label="Filtrer skoleprojekter">
+      <button
+        type="button"
+        class="filter-button is-active"
+        data-school-filter="all"
+        aria-pressed="true"
+      >
+        <svg
+          class="folder-shape"
+          width="179"
+          height="34"
+          viewBox="0 0 179 34"
+          preserveAspectRatio="none"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path
+            d="M6.63538 7.98285L0.631348 33.5H89.4937H178.356L171.441 7.69381C170.304 3.45056 166.459 0.5 162.066 0.5H16.0833C11.5792 0.5 7.66698 3.59855 6.63538 7.98285Z"
+            fill="white"
+            stroke="black"
+            stroke-opacity="0.6"></path>
+        </svg>
+        <span>Alle</span>
+      </button>
+      <button
+        type="button"
+        class="filter-button"
+        data-school-filter="analog"
+        aria-pressed="false"
+      >
+        <svg
+          class="folder-shape"
+          width="179"
+          height="34"
+          viewBox="0 0 179 34"
+          preserveAspectRatio="none"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path
+            d="M6.63538 7.98285L0.631348 33.5H89.4937H178.356L171.441 7.69381C170.304 3.45056 166.459 0.5 162.066 0.5H16.0833C11.5792 0.5 7.66698 3.59855 6.63538 7.98285Z"
+            fill="white"
+            stroke="black"
+            stroke-opacity="0.6"></path>
+        </svg>
+        <span>Analog</span>
+      </button>
+      <button
+        type="button"
+        class="filter-button"
+        data-school-filter="digital"
+        aria-pressed="false"
+      >
+        <svg
+          class="folder-shape"
+          width="179"
+          height="34"
+          viewBox="0 0 179 34"
+          preserveAspectRatio="none"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path
+            d="M6.63538 7.98285L0.631348 33.5H89.4937H178.356L171.441 7.69381C170.304 3.45056 166.459 0.5 162.066 0.5H16.0833C11.5792 0.5 7.66698 3.59855 6.63538 7.98285Z"
+            fill="white"
+            stroke="black"
+            stroke-opacity="0.6"></path>
+        </svg>
+        <span>Digital</span>
+      </button>
+      <button
+        type="button"
+        class="filter-button"
+        data-school-filter="foto"
+        aria-pressed="false"
+      >
+        <svg
+          class="folder-shape"
+          width="179"
+          height="34"
+          viewBox="0 0 179 34"
+          preserveAspectRatio="none"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path
+            d="M6.63538 7.98285L0.631348 33.5H89.4937H178.356L171.441 7.69381C170.304 3.45056 166.459 0.5 162.066 0.5H16.0833C11.5792 0.5 7.66698 3.59855 6.63538 7.98285Z"
+            fill="white"
+            stroke="black"
+            stroke-opacity="0.6"></path>
+        </svg>
+        <span>Foto</span>
+      </button>
+    </nav>
+
+    <section class="project-grid" aria-label="Skoleprojekter">
+      {
+        [...schoolProjects].reverse().map((project) => (
+          <a
+            class="project-card"
+            href={`/school/${project.id}`}
+            data-school-category={project.kategorier.join(" ")}
+          >
+            <div
+              class="project-visual"
+              style={`--shadow-color: ${project.skyggefarve}`}
+            >
+              <span class="blur-shadow" aria-hidden="true" />
+              {project.billede ? (
+                <img
+                  src={project.billede}
+                  alt={project.titel}
+                  loading="lazy"
+                  style={`--image-scale: ${(project.scale ?? 100) / 100}`}
+                />
+              ) : (
+                <span class="image-placeholder">Projektbillede</span>
+              )}
+            </div>
+            <div class="project-caption">
+              <h2>{project.titel}</h2>
+              <time>{project.dato}</time>
+            </div>
+          </a>
+        ))
+      }
+    </section>
+  </main>
+</Layout>
+
+<script>
+  const filterButtons = document.querySelectorAll<HTMLButtonElement>(
+    "[data-school-filter]",
+  );
+  const projectCards = document.querySelectorAll<HTMLElement>(
+    "[data-school-category]",
+  );
+
+  filterButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const filter = button.dataset.schoolFilter;
+
+      filterButtons.forEach((filterButton) => {
+        const isActive = filterButton === button;
+        filterButton.classList.toggle("is-active", isActive);
+        filterButton.setAttribute("aria-pressed", String(isActive));
+      });
+
+      projectCards.forEach((card) => {
+        const categories = card.dataset.schoolCategory?.split(" ") ?? [];
+        card.hidden = filter !== "all" && !categories.includes(filter ?? "");
+      });
+    });
+  });
+
+  projectCards.forEach((card) => {
+    let lastRotation: number | null = null;
+
+    card.addEventListener("mouseenter", () => {
+      const rotationOptions = [-2, 1.5, 3.2];
+      let rotation: number;
+
+      do {
+        rotation =
+          rotationOptions[Math.floor(Math.random() * rotationOptions.length)];
+      } while (rotation === lastRotation && rotationOptions.length > 1);
+
+      card.style.setProperty("--hover-rotation", `${rotation}deg`);
+      lastRotation = rotation;
+    });
+
+    card.addEventListener("mouseleave", () => {
+      card.style.removeProperty("--hover-rotation");
+    });
+  });
+
+  const projectTitles = Array.from(
+    document.querySelectorAll<HTMLElement>(".project-caption h2"),
+  );
+
+  const updateMobileTitleSizes = () => {
+    const isMobile = window.matchMedia("(max-width: 600px)").matches;
+
+    projectTitles.forEach((title) => {
+      title.classList.remove("is-compact-title");
+      if (!isMobile) return;
+
+      const lineHeight = Number.parseFloat(getComputedStyle(title).lineHeight);
+      if (title.scrollHeight > lineHeight * 1.5) {
+        title.classList.add("is-compact-title");
+      }
+    });
+  };
+
+  void document.fonts.ready.then(updateMobileTitleSizes);
+  window.addEventListener("resize", updateMobileTitleSizes);
+</script>
+
+<style>
+  .school-page {
+    --school-heading-font: "school-heading", owners-xxwide, sans-serif;
+    padding-top: 5.5rem;
+    color: #050505;
+  }
+
+  .school-heading {
+    padding: 0 2.8vw 4.3rem;
+  }
+
+  .school-heading h1 {
+    margin: 0 0 0.55rem;
+    font-family: var(--school-heading-font);
+    font-size: 90px;
+    font-weight: 400;
+    line-height: 0.95;
+    text-transform: uppercase;
+  }
+
+  .title-mobile {
+    display: none;
+  }
+
+  .school-heading p {
+    text-align: justify;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 100%;
+    margin-top: 5px;
+  }
+
+  .school-filters {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: end;
+    padding-left: 2.8vw;
+  }
+
+  .filter-button {
+    position: relative;
+    display: grid;
+    width: 184px;
+    height: 43.2px;
+    flex: 0 0 184px;
+    place-items: center;
+    margin: 0 -43.2px -1px 0;
+    padding: 6.4px 22.4px 5.6px;
+    border: 0;
+    isolation: isolate;
+    background: transparent;
+    color: #050505;
+    cursor: pointer;
+    font-family: var(--school-heading-font);
+    font-size: 18.4px;
+    line-height: 1;
+    text-transform: uppercase;
+    transition:
+      transform 160ms ease,
+      color 160ms ease;
+  }
+
+  .folder-shape {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .folder-shape path {
+    fill: #fff;
+    stroke: #050505;
+    stroke-opacity: 0.6;
+    vector-effect: non-scaling-stroke;
+    transition:
+      fill 160ms ease,
+      stroke 160ms ease;
+  }
+
+  .filter-button:nth-child(1) {
+    z-index: 1;
+  }
+
+  .filter-button:nth-child(2) {
+    z-index: 3;
+  }
+
+  .filter-button:nth-child(3) {
+    z-index: 2;
+  }
+
+  .filter-button.is-active {
+    z-index: 4;
+    transform: translateY(-4.8px);
+    color: #fff;
+  }
+
+  .filter-button.is-active .folder-shape path,
+  .filter-button:hover .folder-shape path,
+  .filter-button:focus-visible .folder-shape path {
+    fill: #050505;
+    stroke: #050505;
+    stroke-opacity: 1;
+  }
+
+  .school-filters:has(.filter-button:hover)
+    .filter-button.is-active:not(:hover),
+  .school-filters:has(.filter-button:focus-visible)
+    .filter-button.is-active:not(:focus-visible) {
+    color: #050505;
+  }
+
+  .school-filters:has(.filter-button:hover)
+    .filter-button.is-active:not(:hover)
+    .folder-shape
+    path,
+  .school-filters:has(.filter-button:focus-visible)
+    .filter-button.is-active:not(:focus-visible)
+    .folder-shape
+    path {
+    fill: #fff;
+    stroke: #666;
+    stroke-opacity: 1;
+  }
+
+  .filter-button:hover,
+  .filter-button:focus-visible {
+    z-index: 6;
+    transform: translateY(-4.8px);
+    color: #fff;
+  }
+
+  .filter-button:focus-visible {
+    outline: 2px solid #050505;
+    outline-offset: 3px;
+  }
+
+  .project-grid {
+    position: relative;
+    z-index: 3;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-top: -4.8px;
+    border-top: 1px solid #666;
+    border-left: 1px solid #666;
+    background: #fff;
+  }
+
+  .project-card {
+    display: grid;
+    min-width: 0;
+    aspect-ratio: 1 / 1;
+    grid-template-rows: minmax(0, 1fr) auto;
+    border-right: 1px solid #666;
+    border-bottom: 1px solid #666;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .project-card[hidden] {
+    display: none;
+  }
+
+  .project-visual {
+    position: relative;
+    display: grid;
+    min-height: 0;
+    height: 100%;
+    place-items: center;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .blur-shadow {
+    position: absolute;
+    z-index: -1;
+    width: 48%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--shadow-color);
+    filter: blur(48px);
+    opacity: 0.75;
+    transition: transform 250ms ease;
+  }
+
+  .project-card:hover .blur-shadow {
+    transform: scale(1.15);
+  }
+
+  .project-visual img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: auto;
+    max-width: 64%;
+    max-height: 68%;
+    object-fit: contain;
+    object-position: center;
+    scale: var(--image-scale, 1);
+    translate: -50% -50%;
+    transform-origin: center;
+    transition: transform 250ms ease;
+  }
+
+  .project-card:hover .project-visual img,
+  .project-card:focus-visible .project-visual img,
+  .project-card:hover .image-placeholder,
+  .project-card:focus-visible .image-placeholder {
+    transform: rotate(var(--hover-rotation, 1.5deg)) scale(1.05);
+  }
+
+  .image-placeholder {
+    display: grid;
+    width: 44%;
+    aspect-ratio: 0.72;
+    place-items: center;
+    border: 1px solid #666;
+    background: #fff;
+    color: #666;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 16px;
+    text-align: center;
+    transform-origin: center;
+    transition: transform 250ms ease;
+  }
+
+  .project-caption {
+    display: flex;
+    height: 76px;
+    min-height: 76px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 9px 12px;
+    border-top: 1px solid #666;
+    overflow: hidden;
+  }
+
+  .project-caption h2 {
+    display: -webkit-box;
+    min-width: 0;
+    flex: 1 1 auto;
+    margin: 0;
+    font-family: var(--school-heading-font);
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1.05;
+    text-transform: uppercase;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+
+  .project-caption time {
+    flex: 0 0 auto;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 15px;
+    font-weight: 700;
+    margin-right: 15px;
+  }
+
+  @media (max-width: 1100px) {
+    .school-heading h1 {
+      font-size: 68px;
+    }
+
+    .project-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .project-caption h2 {
+      font-size: 18px;
+    }
+
+    .project-caption time {
+      font-size: 14px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    :global(html),
+    :global(body) {
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    .school-page {
+      padding-top: 4.75rem;
+      width: 100%;
+    }
+
+    .project-grid {
+      grid-template-columns: minmax(0, 1fr);
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+    }
+
+    .school-heading {
+      padding: 0 16px 1.75rem;
+    }
+
+    .school-heading h1 {
+      margin-bottom: 0.8rem;
+      font-size: 32px;
+      line-height: 0.9;
+    }
+
+    .title-desktop {
+      display: none;
+    }
+
+    .title-mobile {
+      display: inline;
+    }
+
+    .school-heading p {
+      width: 100%;
+      margin-top: 0;
+      font-size: 17px;
+      line-height: 1.3;
+      text-align: left;
+    }
+
+    .desktop-break {
+      display: none;
+    }
+
+    .school-filters {
+      padding-left: 5vw;
+    }
+
+    .filter-button {
+      width: 112px;
+      height: 36.8px;
+      flex-basis: 112px;
+      margin-right: -12px;
+      padding: 6.4px 16px 5.6px;
+      font-size: 14.4px;
+    }
+
+    .project-visual {
+      min-height: 0;
+    }
+
+    .project-caption {
+      height: 92px;
+      min-height: 92px;
+      align-items: flex-start;
+      flex-direction: column;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 14px;
+    }
+
+    .project-caption h2 {
+      display: block;
+      width: 100%;
+      flex: 0 0 auto;
+      font-size: 22px;
+      overflow: visible;
+      -webkit-line-clamp: unset;
+      -webkit-box-orient: initial;
+    }
+
+    .project-caption h2.is-compact-title {
+      font-size: 18px;
+    }
+
+    .project-caption time {
+      font-size: 14px;
+    }
+
+    .image-placeholder {
+      width: 56%;
+      font-size: 13px;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .project-caption h2 {
+      font-size: 20px;
+    }
+
+    .project-caption h2.is-compact-title {
+      font-size: 16px;
+    }
+  }
+</style>

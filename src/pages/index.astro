@@ -78,6 +78,83 @@ import cards from "../database/cards.jsx";
     </section>
     <Letter />
   </section>
+  <nav class="section-scroll-controls" aria-label="Sektioner på forsiden">
+    <button
+      type="button"
+      data-section-direction="up"
+      aria-label="Gå til forrige sektion"
+      title="Forrige sektion"
+      ><svg
+        class="section-arrow section-arrow-down"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path d="M8 4L16 12L8 20"></path>
+      </svg></button
+    >
+    <button
+      type="button"
+      data-section-direction="down"
+      aria-label="Gå til næste sektion"
+      title="Næste sektion"
+      ><svg
+        class="section-arrow section-arrow-up"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path d="M8 4L16 12L8 20"></path>
+      </svg></button
+    >
+  </nav>
+
+  <script>
+    const homeSections = [
+      "hero_section",
+      "presentation",
+      "note_section",
+      "letter_section",
+    ]
+      .map((id) => document.getElementById(id))
+      .filter(
+        (section): section is HTMLElement => section instanceof HTMLElement,
+      );
+
+    document
+      .querySelectorAll<HTMLButtonElement>("[data-section-direction]")
+      .forEach((button) => {
+        button.addEventListener("click", () => {
+          if (homeSections.length === 0) return;
+
+          const currentIndex = homeSections.reduce(
+            (closestIndex, section, index) => {
+              const currentDistance = Math.abs(
+                section.getBoundingClientRect().top,
+              );
+              const closestDistance = Math.abs(
+                homeSections[closestIndex].getBoundingClientRect().top,
+              );
+              return currentDistance < closestDistance ? index : closestIndex;
+            },
+            0,
+          );
+          const direction = button.dataset.sectionDirection === "down" ? 1 : -1;
+          const targetIndex = Math.max(
+            0,
+            Math.min(homeSections.length - 1, currentIndex + direction),
+          );
+
+          homeSections[targetIndex].scrollIntoView({
+            behavior: window.matchMedia("(prefers-reduced-motion: reduce)")
+              .matches
+              ? "auto"
+              : "smooth",
+            block: "start",
+          });
+        });
+      });
+  </script>
 
   <!-- Snap scroll - kun på desktop -->
   <script is:inline>
@@ -564,5 +641,62 @@ import cards from "../database/cards.jsx";
       margin: 0 !important;
       padding: 0 !important;
     } */
+
+    .section-scroll-controls {
+      position: fixed;
+      z-index: 1200;
+      bottom: 18px;
+      left: 18px;
+      display: flex;
+      flex-direction: row;
+      gap: 6px;
+    }
+
+    .section-scroll-controls button {
+      display: grid;
+      width: 40px;
+      height: 40px;
+      place-items: center;
+      border: 2px solid #000;
+      border-radius: 50%;
+      background: #fff;
+      color: #050505;
+      cursor: pointer;
+      font-family: Helvetica, sans-serif;
+      font-size: 1.2rem;
+      font-weight: 100;
+      line-height: 1;
+      transition: transform 160ms ease;
+    }
+
+    .section-scroll-controls button:hover {
+      transform: scale(1.05);
+    }
+
+    .section-arrow {
+      display: block;
+      width: 24px;
+      height: 24px;
+      overflow: visible;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transform-origin: center;
+    }
+
+    .section-arrow-up {
+      transform: rotate(90deg);
+    }
+
+    .section-arrow-down {
+      transform: rotate(-90deg);
+    }
+
+    .section-scroll-controls button:focus-visible {
+      outline: 2px solid #050505;
+      outline-offset: 3px;
+    }
   </style>
 </Layout>
