@@ -51,6 +51,9 @@ const projectImages = [project.billede, ...(project.billeder ?? [])].filter(
                   type="button"
                   data-carousel-slide
                   data-index={index}
+                  data-caption={
+                    project.billedetekster?.[index] ?? project.titel
+                  }
                   aria-label={`Vis billede ${index + 1} af ${projectImages.length}`}
                   aria-pressed={index === 0}
                   aria-hidden={index > 1 && index < projectImages.length - 1}
@@ -63,6 +66,9 @@ const projectImages = [project.billede, ...(project.billeder ?? [])].filter(
                 </button>
               ))}
             </div>
+            <p class="carousel-caption" data-carousel-caption>
+              {project.billedetekster?.[0] ?? project.titel}
+            </p>
             <nav class="carousel-controls" aria-label="Billedkarusel">
               <button
                 class="carousel-arrow"
@@ -137,6 +143,9 @@ const projectImages = [project.billede, ...(project.billeder ?? [])].filter(
     const indicators = Array.from(
       carousel.querySelectorAll<HTMLButtonElement>("[data-carousel-indicator]"),
     );
+    const caption = carousel.querySelector<HTMLElement>(
+      "[data-carousel-caption]",
+    );
     const lightbox = document.querySelector<HTMLDivElement>(
       "[data-image-lightbox]",
     );
@@ -145,6 +154,80 @@ const projectImages = [project.billede, ...(project.billeder ?? [])].filter(
     let currentIndex = 0;
     let returnFocus: HTMLButtonElement | null = null;
     let previousBodyOverflow = "";
+    let captionUpdateId = 0;
+    let captionTimer: number | undefined;
+    let pendingCaptionTransition:
+      | { slide: HTMLButtonElement; handler: (event: TransitionEvent) => void }
+      | undefined;
+
+    const updateCaptionPosition = () => {
+      const currentImage = slides[currentIndex]?.querySelector("img");
+      if (!caption || !currentImage) return;
+
+      const imageBounds = currentImage.getBoundingClientRect();
+      const carouselBounds = carousel.getBoundingClientRect();
+      caption.style.left = `${imageBounds.right - carouselBounds.left}px`;
+      caption.style.top = `${imageBounds.bottom - carouselBounds.top}px`;
+    };
+
+    const cancelPendingCaptionUpdate = () => {
+      if (pendingCaptionTransition) {
+        const { slide, handler } = pendingCaptionTransition;
+        slide.removeEventListener("transitionend", handler);
+        pendingCaptionTransition = undefined;
+      }
+
+      if (captionTimer !== undefined) {
+        window.clearTimeout(captionTimer);
+        captionTimer = undefined;
+      }
+    };
+
+    const updateCaption = (waitForCenter = false) => {
+      const currentSlide = slides[currentIndex];
+      if (!caption || !currentSlide) return;
+
+      const updateId = ++captionUpdateId;
+      cancelPendingCaptionUpdate();
+
+      const showCurrentCaption = () => {
+        if (updateId !== captionUpdateId) return;
+
+        cancelPendingCaptionUpdate();
+        caption.textContent = currentSlide.dataset.caption ?? "";
+        updateCaptionPosition();
+        requestAnimationFrame(() => {
+          if (updateId === captionUpdateId) {
+            caption.classList.remove("is-fading");
+          }
+        });
+      };
+
+      if (!waitForCenter) {
+        caption.classList.remove("is-fading");
+        showCurrentCaption();
+        return;
+      }
+
+      caption.classList.add("is-fading");
+      const handleTransitionEnd = (event: TransitionEvent) => {
+        if (
+          event.target !== currentSlide ||
+          event.propertyName !== "transform"
+        ) {
+          return;
+        }
+
+        showCurrentCaption();
+      };
+
+      pendingCaptionTransition = {
+        slide: currentSlide,
+        handler: handleTransitionEnd,
+      };
+      currentSlide.addEventListener("transitionend", handleTransitionEnd);
+      captionTimer = window.setTimeout(showCurrentCaption, 650);
+    };
 
     const closeLightbox = () => {
       if (!lightbox || !lightboxImage) return;
@@ -171,7 +254,7 @@ const projectImages = [project.billede, ...(project.billeder ?? [])].filter(
       lightbox.focus();
     };
 
-    const updateCarousel = () => {
+    const updateCarousel = (waitForCenter = false) => {
       if (!stage) return;
       const sideOffset =
         Number.parseFloat(
@@ -205,11 +288,16 @@ const projectImages = [project.billede, ...(project.billeder ?? [])].filter(
         indicator.classList.toggle("is-current", isCurrent);
         indicator.setAttribute("aria-pressed", String(isCurrent));
       });
+
+      updateCaption(waitForCenter);
     };
 
     const moveCarousel = (direction: number) => {
-      currentIndex = (currentIndex + direction + slides.length) % slides.length;
-      updateCarousel();
+      const nextIndex =
+        (currentIndex + direction + slides.length) % slides.length;
+      const changed = nextIndex !== currentIndex;
+      currentIndex = nextIndex;
+      updateCarousel(changed);
     };
 
     carousel
@@ -229,7 +317,7 @@ const projectImages = [project.billede, ...(project.billeder ?? [])].filter(
 
         if (slideIndex !== currentIndex) {
           currentIndex = slideIndex;
-          updateCarousel();
+          updateCarousel(true);
           return;
         }
 
@@ -241,8 +329,10 @@ const projectImages = [project.billede, ...(project.billeder ?? [])].filter(
 
     indicators.forEach((indicator) => {
       indicator.addEventListener("click", () => {
-        currentIndex = Number(indicator.dataset.index);
-        updateCarousel();
+        const nextIndex = Number(indicator.dataset.index);
+        const changed = nextIndex !== currentIndex;
+        currentIndex = nextIndex;
+        updateCarousel(changed);
       });
     });
 
@@ -257,7 +347,7 @@ const projectImages = [project.billede, ...(project.billeder ?? [])].filter(
     requestAnimationFrame(() => {
       requestAnimationFrame(() => stage?.classList.add("is-ready"));
     });
-    window.addEventListener("resize", updateCarousel);
+    window.addEventListener("resize", () => updateCarousel());
   }
 </script>
 
@@ -348,6 +438,26 @@ const projectImages = [project.billede, ...(project.billeder ?? [])].filter(
     position: relative;
     z-index: 1;
     width: 100%;
+  }
+
+  .carousel-caption {
+    position: absolute;
+    z-index: 4;
+    max-width: 80vw;
+    margin: 4px 0 0;
+    color: #777;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 12px;
+    line-height: 1;
+    text-align: right;
+    opacity: 1;
+    transition: opacity 180ms ease;
+    transform: translateX(-100%);
+    pointer-events: none;
+  }
+
+  .carousel-caption.is-fading {
+    opacity: 0;
   }
 
   .carousel-stage {
