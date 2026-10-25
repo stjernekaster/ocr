@@ -3,6 +3,7 @@ const schoolProjects = [
     id: "tabula-rasa",
     titel: "Tabula Rasa",
     dato: "04/09/2025",
+    beskrivelseLinks: [],
     kategorier: ["foto"],
     billede: "/school_projects/tabula_rasa/tabula_rasa1.png",
     scale: 80,
@@ -26,12 +27,19 @@ const schoolProjects = [
       "Grå dør",
     ],
     skyggefarve: "#6383a5",
-    beskrivelse: "",
+    beskrivelse:
+      "Som første opgave på vores nye uddannelse, blev vi sat i grupper og bedt om at fotografere og registrere omgivelserne af vores skole inde for en radius. Min gruppe og jeg befandt os hurtigt på Christiania, hvor vi registrerede grafik, lys og døre i en billedeserie. Billederne er taget i samarbejde med Bina Samson og Katinka Arnbak",
   },
   {
     id: "nemoland",
     titel: "Nemoland",
     dato: "11/09/2025",
+    beskrivelseLinks: [
+      {
+        url: "https://target-blast-86332223.figma.site/",
+        label: "Besøg Nemoland",
+      },
+    ],
     kategorier: ["digital", "analog"],
     billede: "/school_projects/nemoland/nemoland1.png",
     scale: 100,
@@ -53,12 +61,14 @@ const schoolProjects = [
       "Interaktivt kort",
     ],
     skyggefarve: "#F1E54A",
-    beskrivelse: "",
+    beskrivelse:
+      "Vores første projekt på uddannelsen endte ud med at bruge vores materiale fra ugerne forinden, og dertil skabe en ny fortælling ud fra det. Min gruppe og jeg valgte at lave et interaktivt kort over Nemoland på Christiania, som en gimmick og kritik af den tourisme som findes på fristaden. Kortet er lavet i samarbejde med Bina Samson, Katinka Arnbak og Christiane Rahbek. Det interaktive kort kan findes her:",
   },
   {
     id: "tabula-rasa-exhibition",
     titel: "Tabula Rasa Exhibition",
     dato: "18/09/2025",
+    beskrivelseLinks: [],
     kategorier: ["analog"],
     billede: "/school_projects/tabula_rasa_exhibition/bornholm1.png",
     scale: 80,
@@ -70,12 +80,14 @@ const schoolProjects = [
     ],
     billedetekster: ["Æble", "Æble", "Tekst", "Grafik", "Tegning"],
     skyggefarve: "#4b515f",
-    beskrivelse: "",
+    beskrivelse:
+      "På vores studietur på første semester til Bornholm, lavede vi en udstilling af vores projekt Tabula Rasa. Udstillingen blev lavet i samarbejde med vores underviser, og vi fik lov til at udstille vores værker. Udstillingen bestod af en række fotografier, som vi havde taget i løbet af projektet, samt en række tegninger og grafik, som vi havde lavet i forbindelse med projektet.",
   },
   {
     id: "zine-machine",
     titel: "Zine Machine",
     dato: "06/10/2025",
+    beskrivelseLinks: [],
     kategorier: ["digital"],
     billede: "/school_projects/zine_machine/zine_machine1.png",
     scale: 100,
@@ -95,12 +107,14 @@ const schoolProjects = [
       "Billedeserie",
     ],
     skyggefarve: "#313131",
-    beskrivelse: "",
+    beskrivelse:
+      "En kort billedeserie fremstillet af vores undervisers Zine Machine program, med ansigtsløse karaktere, som jeg har fyldt med monogrammer af forskellige former.",
   },
   {
     id: "lykketrolde",
     titel: "Lykketrolde",
     dato: "16/10/2025",
+    beskrivelseLinks: [],
     kategorier: ["digital"],
     billede: "/school_projects/lykketrolde/lykketrolde1.png",
     scale: 100,
@@ -120,12 +134,14 @@ const schoolProjects = [
       "Hr. Stig",
     ],
     skyggefarve: "#cd4d54",
-    beskrivelse: "",
+    beskrivelse:
+      "Dette er et seperat projekt uden om min uddannelse. Projektet indebærer en serie af illustrationer af forskellige personer, som jeg ved hjælp af AI har genereret til Lykketrolde 'Gjøl-trold'. De oprindelige trolde blev fremstillet af kunstneren Thomas Dam i 1959, og de blev hurtigt populære i Danmark og internationalt. Lykketrolde er kendt for deres karakteristiske udseende med store hoveder, små kroppe og farverige tøj. De har været en del af dansk kultur i mange år og i dette projekt har jeg valgt at genskabe dem med et moderne twist af ikoniske danskere inde for medieverdenen.",
   },
   {
     id: "rebirth-of-the-paradox",
     titel: "Rebirth of the Paradox",
     dato: "23/10/2025",
+    beskrivelseLinks: [],
     kategorier: ["analog"],
     billede: "/school_projects/rebirth/rebirth_of_the_paradox1.png",
     scale: 100,
@@ -161,7 +177,8 @@ const schoolProjects = [
       "Bagside",
     ],
     skyggefarve: "#0c0c0c",
-    beskrivelse: "",
+    beskrivelse:
+      "Dette projekt er lavet i samarbejde med Elvira Skovgaard Dokken og Julia Åkerblom Westberg. Projektet er opbygget ud fra konceptet af en ‘fan-zine’, og her har vi udarbejdet en tegneserie, som er omhandler vores undervises onkel og hans arkiv af gamle fotografier, og illustrationer. Bogen har et transparent obi-bånd, som fungerer som øjne og briller på forsidens ansigt, og ved fjernelse af båndet blottes Onkels pupil-løse øjne. Bogen handler om hvordan hovedpersonen Onkel og hans hund Flemming bliver bortført af rumvæsner.",
   },
 ];
 

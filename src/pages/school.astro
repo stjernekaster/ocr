@@ -9,10 +9,20 @@ import Layout from "../layouts/Layout.astro";
 >
   <main class="school-page">
     <header class="school-heading">
-      <h1>
-        <span class="title-desktop">Skoleprojekter</span>
-        <span class="title-mobile">Skole-<br />Projekter</span>
-      </h1>
+      <div class="school-heading-row">
+        <h1>
+          <span class="title-desktop">Skole- <br /> projekter</span>
+          <span class="title-mobile">Skole-<br />Projekter</span>
+        </h1>
+        <div class="school-mark-space">
+          <img
+            class="school-mark"
+            src="/school_projects/dka.png"
+            alt="DKA"
+            loading="eager"
+          />
+        </div>
+      </div>
       <p>
         En oversigt over alt mit arbejde fra Det Kongelige Erhvervsakademi<br
           class="desktop-break"
@@ -237,8 +247,36 @@ import Layout from "../layouts/Layout.astro";
     padding: 0 2.8vw 4.3rem;
   }
 
+  .school-heading-row {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 1vw, 16px);
+    margin-bottom: 0.55rem;
+  }
+
+  .school-heading-row h1 {
+    flex: 0 0 auto;
+    width: max-content;
+  }
+
+  .school-mark-space {
+    display: flex;
+    min-width: 0;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .school-mark {
+    display: block;
+    width: clamp(120px, 16vw, 220px);
+    flex: 0 0 auto;
+    aspect-ratio: 1;
+    object-fit: contain;
+  }
+
   .school-heading h1 {
-    margin: 0 0 0.55rem;
+    margin: 0;
     font-family: var(--school-heading-font);
     font-size: 90px;
     font-weight: 400;
@@ -254,7 +292,7 @@ import Layout from "../layouts/Layout.astro";
     text-align: justify;
     font-family: "Times New Roman", Times, serif;
     font-size: 100%;
-    margin-top: 5px;
+    margin: 0;
   }
 
   .school-filters {
@@ -484,7 +522,7 @@ import Layout from "../layouts/Layout.astro";
 
   .project-caption time {
     flex: 0 0 auto;
-    font-family: "Times New Roman", Times, serif;
+    font-family: roundhand-bold, sans-serif;
     font-size: 15px;
     font-weight: 700;
     margin-right: 15px;
@@ -505,6 +543,16 @@ import Layout from "../layouts/Layout.astro";
 
     .project-caption time {
       font-size: 14px;
+    }
+  }
+
+  @media (max-width: 800px) {
+    .school-heading-row h1 {
+      font-size: clamp(48px, calc(12vw - 24px), 68px);
+    }
+
+    .school-mark {
+      width: clamp(64px, 10vw, 80px);
     }
   }
 
@@ -530,10 +578,18 @@ import Layout from "../layouts/Layout.astro";
       padding: 0 16px 1.75rem;
     }
 
+    .school-mark {
+      width: clamp(35.5px, 13.64vw, 53.2px);
+    }
+
     .school-heading h1 {
-      margin-bottom: 0.8rem;
       font-size: 32px;
       line-height: 0.9;
+    }
+
+    .school-heading-row {
+      gap: 8px;
+      margin-bottom: 0.8rem;
     }
 
     .title-desktop {
@@ -557,16 +613,22 @@ import Layout from "../layouts/Layout.astro";
     }
 
     .school-filters {
-      padding-left: 5vw;
+      padding-left: 0;
     }
 
     .filter-button {
-      width: 112px;
-      height: 36.8px;
-      flex-basis: 112px;
-      margin-right: -12px;
-      padding: 6.4px 16px 5.6px;
-      font-size: 14.4px;
+      width: 89.6px;
+      height: 29.44px;
+      flex-basis: 89.6px;
+      margin-right: -19px;
+      padding: 5.12px 12.8px 4.48px;
+      font-size: 11px;
+    }
+
+    .filter-button.is-active,
+    .filter-button:hover,
+    .filter-button:focus-visible {
+      transform: translateY(-3.84px);
     }
 
     .project-visual {
@@ -604,6 +666,12 @@ import Layout from "../layouts/Layout.astro";
     .image-placeholder {
       width: 56%;
       font-size: 13px;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .school-heading h1 {
+      font-size: 26px;
     }
   }
 

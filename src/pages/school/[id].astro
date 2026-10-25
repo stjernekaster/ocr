@@ -114,7 +114,26 @@ const projectImages = [project.billede, ...(project.billeder ?? [])].filter(
       }
     </section>
 
-    {project.beskrivelse && <p class="description">{project.beskrivelse}</p>}
+    <section
+      class="project-description"
+      aria-labelledby="project-description-title"
+    >
+      {
+        project.beskrivelse && (
+          <p>
+            {project.beskrivelse}
+            {project.beskrivelseLinks.map((link) => (
+              <span class="description-link">
+                {" "}
+                <a href={link.url} target="_blank" rel="noopener noreferrer">
+                  {link.label}
+                </a>
+              </span>
+            ))}
+          </p>
+        )
+      }
+    </section>
   </main>
   <div
     class="image-lightbox"
@@ -404,8 +423,8 @@ const projectImages = [project.billede, ...(project.billeder ?? [])].filter(
 
   .detail-heading time {
     flex: 0 0 auto;
-    font-family: "Times New Roman", Times, serif;
-    font-size: 17px;
+    font-family: roundhand-bold, Times, serif;
+    font-size: 24px;
     font-weight: 700;
   }
 
@@ -642,12 +661,27 @@ const projectImages = [project.billede, ...(project.billeder ?? [])].filter(
     font-size: 18px;
   }
 
-  .description {
-    max-width: 760px;
-    margin: 2rem auto 4rem;
+  .project-description {
+    max-width: 600px;
+    background: #fff;
+    margin-top: 2rem;
+  }
+
+  .project-description p {
+    margin: 0;
     font-family: "Times New Roman", Times, serif;
-    font-size: 21px;
+    font-size: 16px;
     line-height: 1.45;
+  }
+
+  .project-description a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .project-description a:hover {
+    opacity: 0.65;
   }
 
   .image-lightbox {
@@ -727,7 +761,11 @@ const projectImages = [project.billede, ...(project.billeder ?? [])].filter(
       min-height: 220px;
     }
 
-    .description {
+    .project-description {
+      padding: 1rem;
+    }
+
+    .project-description p {
       font-size: 18px;
     }
   }
