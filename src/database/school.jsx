@@ -2,7 +2,7 @@ const schoolProjects = [
   {
     id: "tabula-rasa",
     titel: "Tabula Rasa",
-    dato: "04/09/2025",
+    dato: "04/09/2026",
     beskrivelseLinks: [],
     kategorier: ["foto"],
     billede: "/school_projects/tabula_rasa/tabula_rasa1.png",
@@ -33,7 +33,7 @@ const schoolProjects = [
   {
     id: "nemoland",
     titel: "Nemoland",
-    dato: "11/09/2025",
+    dato: "11/09/2026",
     beskrivelseLinks: [
       {
         url: "https://target-blast-86332223.figma.site/",
@@ -67,7 +67,7 @@ const schoolProjects = [
   {
     id: "tabula-rasa-exhibition",
     titel: "Tabula Rasa Exhibition",
-    dato: "18/09/2025",
+    dato: "18/09/2026",
     beskrivelseLinks: [],
     kategorier: ["analog"],
     billede: "/school_projects/tabula_rasa_exhibition/bornholm1.png",
@@ -86,7 +86,7 @@ const schoolProjects = [
   {
     id: "zine-machine",
     titel: "Zine Machine",
-    dato: "06/10/2025",
+    dato: "06/10/2026",
     beskrivelseLinks: [],
     kategorier: ["digital"],
     billede: "/school_projects/zine_machine/zine_machine1.png",
@@ -113,7 +113,7 @@ const schoolProjects = [
   {
     id: "lykketrolde",
     titel: "Lykketrolde",
-    dato: "16/10/2025",
+    dato: "16/10/2026",
     beskrivelseLinks: [],
     kategorier: ["digital"],
     billede: "/school_projects/lykketrolde/lykketrolde1.png",
@@ -140,10 +140,10 @@ const schoolProjects = [
   {
     id: "rebirth-of-the-paradox",
     titel: "Rebirth of the Paradox",
-    dato: "23/10/2025",
+    dato: "23/10/2026",
     beskrivelseLinks: [],
     kategorier: ["analog"],
-    billede: "/school_projects/rebirth/rebirth_of_the_paradox1.png",
+    billede: "/school_projects/rebirth/rebirth1.gif",
     scale: 100,
     billeder: [
       "/school_projects/rebirth/obi.png",
@@ -179,6 +179,53 @@ const schoolProjects = [
     skyggefarve: "#0c0c0c",
     beskrivelse:
       "Dette projekt er lavet i samarbejde med Elvira Skovgaard Dokken og Julia Åkerblom Westberg. Projektet er opbygget ud fra konceptet af en ‘fan-zine’, og her har vi udarbejdet en tegneserie, som er omhandler vores undervises onkel og hans arkiv af gamle fotografier, og illustrationer. Bogen har et transparent obi-bånd, som fungerer som øjne og briller på forsidens ansigt, og ved fjernelse af båndet blottes Onkels pupil-løse øjne. Bogen handler om hvordan hovedpersonen Onkel og hans hund Flemming bliver bortført af rumvæsner.",
+  },
+  {
+    id: "interactive-star_1",
+    titel: "Geometric Star",
+    dato: "06/10/2026",
+    beskrivelseLinks: [],
+    kategorier: ["digital"],
+    billede: "/school_projects/geo_star/geo_star2.gif",
+    scale: 100,
+    billeder: [
+      "/school_projects/geo_star/geo_star1.gif",
+      "/school_projects/geo_star/geo_star3.png",
+    ],
+    billedetekster: [
+      "GIF med gennemsigtig baggrund",
+      "GIF med hvid baggrund",
+      "Stjerne kode",
+    ],
+    skyggefarve: "#41693a",
+    beskrivelse:
+      "Et side projekt lavet i p5.js og AI. Dette projekt er lavet ved siden af undervisning, for at teste programmets muligheder for generering af geometriske former.",
+  },
+  {
+    id: "Random-Personality-Generator",
+    titel: "Personality Generator",
+    dato: "09/11/2026",
+    beskrivelseLinks: [
+      {
+        url: "https://editor.p5js.org/stjerne/sketches/hPfiHeOE5",
+        label: "Random Personality Generator",
+      },
+    ],
+    kategorier: ["digitalt"],
+    billede: "/school_projects/random/random_1.gif",
+    scale: 100,
+    billeder: [
+      "/school_projects/random/random_2.png",
+      "/school_projects/random/random_3.png",
+    ],
+    billedetekster: [
+      "Random Personality Generator",
+      "Karakter katalog",
+      "Generator forside",
+    ],
+    skyggefarve: "#e550de",
+    beskrivelse:
+      "I vores nye forløb Creative Coding, har vi lært om brug af html, css og javascript. Ugen har hovedsageligt gået ud på at lære p5.js, som er et open-source JavaScript bibliotek. Hen over weekenden fik vi til opgave at lave en enten interaktiv plakat, eller en retro gif. Jeg valgte at lave en interaktiv plakat, med fokus på indlæsning af billeder. Projektet 'Random Personality Generator' genererer en tilfældig personlighed, ved at kombinere forskellige billeder af ansigter. Projektet er lavet i p5.js, og kan findes her:",
   },
 ];
 

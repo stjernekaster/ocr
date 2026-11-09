@@ -148,7 +148,16 @@ import Layout from "../layouts/Layout.astro";
               <span class="blur-shadow" aria-hidden="true" />
               {project.billede ? (
                 <img
-                  src={project.billede}
+                  src={
+                    project.billede.toLowerCase().endsWith(".gif")
+                      ? project.billede.replace(/\.gif$/i, "-poster.png")
+                      : project.billede
+                  }
+                  data-gif-src={
+                    project.billede.toLowerCase().endsWith(".gif")
+                      ? project.billede
+                      : undefined
+                  }
                   alt={project.titel}
                   loading="lazy"
                   style={`--image-scale: ${(project.scale ?? 100) / 100}`}
@@ -169,6 +178,10 @@ import Layout from "../layouts/Layout.astro";
 </Layout>
 
 <script>
+  import { setupHoverGifs } from "../scripts/hover-gifs";
+
+  setupHoverGifs();
+
   const filterButtons = document.querySelectorAll<HTMLButtonElement>(
     "[data-school-filter]",
   );

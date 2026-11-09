@@ -59,7 +59,14 @@ const projectImages = [project.billede, ...(project.billeder ?? [])].filter(
                   aria-hidden={index > 1 && index < projectImages.length - 1}
                 >
                   <img
-                    src={image}
+                    src={
+                      image.toLowerCase().endsWith(".gif")
+                        ? image.replace(/\.gif$/i, "-poster.png")
+                        : image
+                    }
+                    data-gif-src={
+                      image.toLowerCase().endsWith(".gif") ? image : undefined
+                    }
                     alt={`${project.titel}, billede ${index + 1}`}
                     loading={index === 0 ? "eager" : "lazy"}
                   />
@@ -150,6 +157,10 @@ const projectImages = [project.billede, ...(project.billeder ?? [])].filter(
 </Layout>
 
 <script>
+  import { setupHoverGifs } from "../../scripts/hover-gifs";
+
+  setupHoverGifs();
+
   const carousel = document.querySelector<HTMLElement>(
     "[data-project-carousel]",
   );
