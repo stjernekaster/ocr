@@ -79,7 +79,7 @@ const schoolProjects = [
       "/school_projects/tabula_rasa_exhibition/bornholm5.png",
     ],
     billedetekster: ["Æble", "Æble", "Tekst", "Grafik", "Tegning"],
-    skyggefarve: "#4b515f",
+    skyggefarve: "#ffffff",
     beskrivelse:
       "På vores studietur på første semester til Bornholm, lavede vi en udstilling af vores projekt Tabula Rasa. Udstillingen blev lavet i samarbejde med vores underviser, og vi fik lov til at udstille vores værker. Udstillingen bestod af en række fotografier, som vi havde taget i løbet af projektet, samt en række tegninger og grafik, som vi havde lavet i forbindelse med projektet.",
   },
@@ -133,7 +133,7 @@ const schoolProjects = [
       "Bubber",
       "Hr. Stig",
     ],
-    skyggefarve: "#cd4d54",
+    skyggefarve: "#df2932",
     beskrivelse:
       "Dette er et seperat projekt uden om min uddannelse. Projektet indebærer en serie af illustrationer af forskellige personer, som jeg ved hjælp af AI har genereret til Lykketrolde 'Gjøl-trold'. De oprindelige trolde blev fremstillet af kunstneren Thomas Dam i 1959, og de blev hurtigt populære i Danmark og internationalt. Lykketrolde er kendt for deres karakteristiske udseende med store hoveder, små kroppe og farverige tøj. De har været en del af dansk kultur i mange år og i dette projekt har jeg valgt at genskabe dem med et moderne twist af ikoniske danskere inde for medieverdenen.",
   },
@@ -162,7 +162,7 @@ const schoolProjects = [
       "Logo tryk",
       "A Zine About",
     ],
-    skyggefarve: "#404b5f",
+    skyggefarve: "#ffffff",
     beskrivelse:
       "Et kort projekt, som varede en dag, hvor vi fik lov til at besøge vores Letterpress værksted her på skolen. Her arbejde jeg sammen med Semilla Mølhede Villaume Reher, på at lave et tryk af introduktionen til en zine. Derudover, arbejde jeg selv med tryk af mit eget navn/wordmark, og statements med 'faggot' som emne.",
   },
@@ -226,7 +226,7 @@ const schoolProjects = [
       "GIF med hvid baggrund",
       "Stjerne kode",
     ],
-    skyggefarve: "#fae22f",
+    skyggefarve: "#ffffff",
     beskrivelse:
       "Et side projekt lavet i p5.js og AI. Dette projekt er lavet ved siden af undervisning, for at teste programmets muligheder for generering af geometriske former.",
   },
@@ -255,6 +255,36 @@ const schoolProjects = [
     skyggefarve: "#e550de",
     beskrivelse:
       "I vores nye forløb Creative Coding, har vi lært om brug af html, css og javascript. Ugen har hovedsageligt gået ud på at lære p5.js, som er et open-source JavaScript bibliotek. Hen over weekenden fik vi til opgave at lave en enten interaktiv plakat, eller en retro gif. Jeg valgte at lave en interaktiv plakat, med fokus på indlæsning af billeder. Projektet 'Random Personality Generator' genererer en tilfældig personlighed, ved at kombinere forskellige billeder af ansigter. Projektet er lavet i p5.js, og kan findes her:",
+  },
+  {
+    id: "Season_changer",
+    titel: "Season Changer",
+    dato: "13/11/2026",
+    beskrivelseLinks: [
+      {
+        url: "https://editor.p5js.org/stjerne/sketches/CsIqLae7w",
+        label: "Season Changer",
+      },
+    ],
+    kategorier: ["digitalt"],
+    billede: "/school_projects/season_changer/season_changer1.png",
+    scale: 100,
+    billeder: [
+      "/school_projects/season_changer/season_changer2.png",
+      "/school_projects/season_changer/season_changer3.png",
+      "/school_projects/season_changer/season_changer4.png",
+      "/school_projects/season_changer/season_changer5.gif",
+    ],
+    billedetekster: [
+      "Træ-skabelon",
+      "Idé-generering",
+      "Træ med fibonacci spiral",
+      "Koden bag træet",
+      "GIF af animation",
+    ],
+    skyggefarve: "#ffffff",
+    beskrivelse:
+      "Som endelige projekt i Creative Coding, skulle vi lave et projekt med inspiration fra naturen. Jeg valgte at lave et interaktivt træ, som ændrer sig efter årstiderne. Træet er lavet i p5.js, og kan findes her:",
   },
 ];
 

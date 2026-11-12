@@ -177,9 +177,11 @@ import Layout from "../layouts/Layout.astro";
   </main>
 </Layout>
 
-<script>
+<!-- <script>
+  import { setupCursorTrail } from "../scripts/cursor-trail.js";
   import { setupHoverGifs } from "../scripts/hover-gifs";
 
+  setupCursorTrail();
   setupHoverGifs();
 
   const filterButtons = document.querySelectorAll<HTMLButtonElement>(
@@ -247,13 +249,50 @@ import Layout from "../layouts/Layout.astro";
 
   void document.fonts.ready.then(updateMobileTitleSizes);
   window.addEventListener("resize", updateMobileTitleSizes);
-</script>
+</script> -->
 
 <style>
   .school-page {
     --school-heading-font: "school-heading", owners-xxwide, sans-serif;
     padding-top: 5.5rem;
     color: #050505;
+  }
+
+  :global(.cursor-trail) {
+    position: fixed;
+    z-index: 9999;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    font-family: Helvetica, Arial, sans-serif;
+  }
+
+  :global(.cursor-trail__glyph) {
+    position: absolute;
+    color: #777;
+    font-size: var(--trail-size);
+    font-weight: 400;
+    line-height: 1;
+    opacity: 0;
+    user-select: none;
+    will-change: transform, opacity;
+    animation: cursor-trail-fade var(--trail-duration) ease-out forwards;
+  }
+
+  @keyframes cursor-trail-fade {
+    0% {
+      opacity: var(--trail-opacity);
+      transform: translate(-50%, -50%) rotate(0);
+    }
+
+    100% {
+      opacity: 0;
+      transform: translate(
+          calc(-50% + var(--trail-drift-x)),
+          calc(-50% + var(--trail-drift-y))
+        )
+        rotate(var(--trail-rotation));
+    }
   }
 
   .school-heading {
