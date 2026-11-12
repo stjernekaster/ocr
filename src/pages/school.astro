@@ -177,13 +177,19 @@ import Layout from "../layouts/Layout.astro";
   </main>
 </Layout>
 
-<!-- <script>
-  import { setupCursorTrail } from "../scripts/cursor-trail.js";
+<script>
   import { setupHoverGifs } from "../scripts/hover-gifs";
 
-  setupCursorTrail();
   setupHoverGifs();
+</script>
 
+<!-- <script>
+  import { setupCursorTrail } from "../scripts/cursor-trail.js";
+
+  setupCursorTrail();
+</script> -->
+
+<script>
   const filterButtons = document.querySelectorAll<HTMLButtonElement>(
     "[data-school-filter]",
   );
@@ -249,7 +255,7 @@ import Layout from "../layouts/Layout.astro";
 
   void document.fonts.ready.then(updateMobileTitleSizes);
   window.addEventListener("resize", updateMobileTitleSizes);
-</script> -->
+</script>
 
 <style>
   .school-page {
